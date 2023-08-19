@@ -8,6 +8,7 @@ import net.smoothplugins.smoothbase.connection.RedisConnection;
 import net.smoothplugins.smoothsync.module.ConfigurationModule;
 import net.smoothplugins.smoothsync.module.ConnectionModule;
 import net.smoothplugins.smoothsync.module.SmoothSyncModule;
+import net.smoothplugins.smoothsync.module.StorageModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SmoothSync extends JavaPlugin {
@@ -33,7 +34,8 @@ public final class SmoothSync extends JavaPlugin {
         injector = Guice.createInjector(
                 new SmoothSyncModule(this),
                 new ConfigurationModule(config, messages),
-                new ConnectionModule(mongoConnection, redisConnection)
+                new ConnectionModule(mongoConnection, redisConnection),
+                new StorageModule()
         );
     }
 
