@@ -80,5 +80,10 @@
             <artifactId>guice</artifactId>
             <version>5.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.smoothplugins</groupId>
+            <artifactId>SmoothBase</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
