@@ -6,10 +6,7 @@ import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothbase.connection.MongoConnection;
 import net.smoothplugins.smoothbase.connection.RedisConnection;
 import net.smoothplugins.smoothsync.loader.MainLoader;
-import net.smoothplugins.smoothsync.module.ConfigurationModule;
-import net.smoothplugins.smoothsync.module.ConnectionModule;
-import net.smoothplugins.smoothsync.module.SmoothSyncModule;
-import net.smoothplugins.smoothsync.module.StorageModule;
+import net.smoothplugins.smoothsync.module.*;
 import net.smoothplugins.smoothusersapi.SmoothUsersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -39,7 +36,8 @@ public final class SmoothSync extends JavaPlugin {
                 new SmoothSyncModule(this, getSmoothUsersAPI()),
                 new ConfigurationModule(config, messages),
                 new ConnectionModule(mongoConnection, redisConnection),
-                new StorageModule()
+                new StorageModule(),
+                new UserModule()
         );
 
         injector.getInstance(MainLoader.class).load();
