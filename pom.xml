@@ -61,6 +61,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -71,19 +75,25 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.smoothplugins</groupId>
-            <artifactId>SmoothSyncAPI</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>5.1.0</version>
         </dependency>
         <dependency>
             <groupId>net.smoothplugins</groupId>
-            <artifactId>SmoothBase</artifactId>
+            <artifactId>SmoothSyncAPI</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Smooth-Plugins</groupId>
+            <artifactId>SmoothBase</artifactId>
+            <version>v1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Smooth-Plugins</groupId>
+            <artifactId>SmoothUsersAPI</artifactId>
+            <version>v1.0.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
