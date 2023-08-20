@@ -9,3 +9,15 @@ mongo:
 
 synchronization:
   join-delay: 500 # Delay in milliseconds before a player is synchronized after joining the server
+  features:
+    inventory: true
+    ender-chest: true
+    game-mode: true
+    experience: true
+    potion-effects: true
+    health: true
+    food: true
+    air: true
+    location: false
+    advancements: true
+    statistics: true
