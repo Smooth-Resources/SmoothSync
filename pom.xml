@@ -6,7 +6,7 @@
 
     <groupId>net.smoothplugins</groupId>
     <artifactId>SmoothSync</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>v1.0.0</version>
     <packaging>jar</packaging>
 
     <name>SmoothSync</name>
@@ -61,10 +61,6 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -92,17 +88,17 @@
         <dependency>
             <groupId>net.smoothplugins</groupId>
             <artifactId>SmoothSyncAPI</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>v1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Smooth-Plugins</groupId>
+            <groupId>net.smoothplugins</groupId>
             <artifactId>SmoothBase</artifactId>
-            <version>v1.0.1</version>
+            <version>v1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Smooth-Plugins</groupId>
+            <groupId>net.smoothplugins</groupId>
             <artifactId>SmoothUsersAPI</artifactId>
-            <version>v1.0.1</version>
+            <version>v1.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

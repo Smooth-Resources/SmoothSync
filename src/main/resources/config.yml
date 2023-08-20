@@ -6,3 +6,6 @@ redis:
 mongo:
   uri: "mongodb://localhost:27017"
   database: "SmoothSync"
+
+synchronization:
+  join-delay: 500 # Delay in milliseconds before a player is synchronized after joining the server

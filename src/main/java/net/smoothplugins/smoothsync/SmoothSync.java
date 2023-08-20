@@ -37,7 +37,8 @@ public final class SmoothSync extends JavaPlugin {
                 new ConfigurationModule(config, messages),
                 new ConnectionModule(mongoConnection, redisConnection),
                 new StorageModule(),
-                new UserModule()
+                new UserModule(),
+                new SerializerModule()
         );
 
         injector.getInstance(MainLoader.class).load();
