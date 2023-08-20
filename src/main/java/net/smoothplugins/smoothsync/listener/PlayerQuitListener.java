@@ -30,7 +30,7 @@ public class PlayerQuitListener implements Listener {
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
             if (user == null) return;
 
-            user = userTranslator.translateToUser(user, player);
+            userTranslator.translateToUser(user, player);
             userService.update(user, Destination.CACHE, Destination.STORAGE);
             userService.setTTLOfCacheByUUID(user.getUuid(), 600); // 10 minutes
         });
