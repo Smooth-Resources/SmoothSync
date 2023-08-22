@@ -11,7 +11,6 @@ import net.smoothplugins.smoothsyncapi.user.UserService;
 import net.smoothplugins.smoothusersapi.SmoothUsersAPI;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
