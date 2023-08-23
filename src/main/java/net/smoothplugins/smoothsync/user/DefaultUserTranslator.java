@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -32,8 +33,9 @@ public class DefaultUserTranslator implements UserTranslator {
         user.setEnderChestItems(player.getEnderChest().getContents());
         user.setGameMode(player.getGameMode());
         user.setExp(player.getExp());
+        user.setLevel(player.getLevel());
         user.setPotionEffects(player.getActivePotionEffects());
-        user.setHealthScale(player.getHealthScale());
+        user.setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         user.setHealth(player.getHealth());
         user.setFoodLevel(player.getFoodLevel());
         user.setSaturation(player.getSaturation());
@@ -129,16 +131,12 @@ public class DefaultUserTranslator implements UserTranslator {
             player.setGameMode(user.getGameMode());
         }
 
-        if (section.getBoolean("experience")) {
-            player.setExp(user.getExp());
-        }
-
         if (section.getBoolean("potion-effects") && user.getPotionEffects() != null) {
             player.addPotionEffects(user.getPotionEffects());
         }
 
         if (section.getBoolean("health")) {
-            player.setHealthScale(user.getHealthScale());
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(user.getMaxHealth());
             player.setHealth(user.getHealth());
         }
 
@@ -160,9 +158,13 @@ public class DefaultUserTranslator implements UserTranslator {
         if (section.getBoolean("advancements") && user.getAdvancements() != null) {
             user.getAdvancements().keySet().forEach(advancement -> {
                 AdvancementProgress progress = player.getAdvancementProgress(advancement);
-                advancement.getCriteria().forEach(progress::revokeCriteria);
                 user.getAdvancements().get(advancement).forEach(progress::awardCriteria);
             });
+        }
+
+        if (section.getBoolean("experience")) {
+            player.setExp(user.getExp());
+            player.setLevel(user.getLevel());
         }
 
         if (section.getBoolean("statistics") && user.getGlobalStatistics() != null && user.getBlockStatistics() != null && user.getEntityStatistics() != null) {
