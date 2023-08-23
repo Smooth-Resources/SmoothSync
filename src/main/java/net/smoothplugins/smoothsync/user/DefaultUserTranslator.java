@@ -28,6 +28,7 @@ public class DefaultUserTranslator implements UserTranslator {
     @Override
     public void translateToUser(User user, Player player) {
         user.setInventoryItems(player.getInventory().getContents());
+        user.setHeldItemSlot(player.getInventory().getHeldItemSlot());
         user.setEnderChestItems(player.getEnderChest().getContents());
         user.setGameMode(player.getGameMode());
         user.setExp(player.getExp());
@@ -105,6 +106,7 @@ public class DefaultUserTranslator implements UserTranslator {
 
         if (section.getBoolean("inventory") && user.getInventoryItems() != null) {
             try {
+                player.getInventory().setHeldItemSlot(user.getHeldItemSlot());
                 player.getInventory().setContents(user.getInventoryItems());
             } catch (IllegalArgumentException ignored) {
                 for (int i = 0; i < player.getInventory().getSize(); i++) {
