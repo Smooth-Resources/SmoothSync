@@ -103,7 +103,7 @@ public class DefaultUserTranslator implements UserTranslator {
             return;
         }
 
-        if (section.getBoolean("inventory")) {
+        if (section.getBoolean("inventory") && user.getInventoryItems() != null) {
             try {
                 player.getInventory().setContents(user.getInventoryItems());
             } catch (IllegalArgumentException ignored) {
@@ -113,7 +113,7 @@ public class DefaultUserTranslator implements UserTranslator {
             }
         }
 
-        if (section.getBoolean("ender-chest")) {
+        if (section.getBoolean("ender-chest") && user.getEnderChestItems() != null) {
             try {
                 player.getEnderChest().setContents(user.getEnderChestItems());
             } catch (IllegalArgumentException ignored) {
@@ -123,7 +123,7 @@ public class DefaultUserTranslator implements UserTranslator {
             }
         }
 
-        if (section.getBoolean("game-mode")) {
+        if (section.getBoolean("game-mode") && user.getGameMode() != null) {
             player.setGameMode(user.getGameMode());
         }
 
@@ -131,7 +131,7 @@ public class DefaultUserTranslator implements UserTranslator {
             player.setExp(user.getExp());
         }
 
-        if (section.getBoolean("potion-effects")) {
+        if (section.getBoolean("potion-effects") && user.getPotionEffects() != null) {
             player.addPotionEffects(user.getPotionEffects());
         }
 
@@ -151,11 +151,11 @@ public class DefaultUserTranslator implements UserTranslator {
             player.setRemainingAir(user.getRemainingAir());
         }
 
-        if (section.getBoolean("location")) {
+        if (section.getBoolean("location") && user.getLocation() != null) {
             player.teleport(user.getLocation());
         }
 
-        if (section.getBoolean("advancements")) {
+        if (section.getBoolean("advancements") && user.getAdvancements() != null) {
             user.getAdvancements().keySet().forEach(advancement -> {
                 AdvancementProgress progress = player.getAdvancementProgress(advancement);
                 advancement.getCriteria().forEach(progress::revokeCriteria);
@@ -163,7 +163,7 @@ public class DefaultUserTranslator implements UserTranslator {
             });
         }
 
-        if (section.getBoolean("statistics")) {
+        if (section.getBoolean("statistics") && user.getGlobalStatistics() != null && user.getBlockStatistics() != null && user.getEntityStatistics() != null) {
             user.getGlobalStatistics().keySet().forEach(statistic -> {
                 player.setStatistic(statistic, user.getGlobalStatistics().get(statistic));
             });
