@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
+import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.DataCleanEvent;
 import net.smoothplugins.smoothsyncapi.event.DataSyncEvent;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -27,6 +28,8 @@ public class PlayerJoinListener implements Listener {
     private Configuration config;
     @Inject
     private UserTranslator userTranslator;
+    @Inject
+    private UserSaver userSaver;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
@@ -73,6 +76,7 @@ public class PlayerJoinListener implements Listener {
                 Bukkit.getPluginManager().callEvent(dataSyncEvent);
                 if (!dataSyncEvent.isCancelled()) {
                     userTranslator.translateToPlayer(user, player);
+                    userSaver.addPlayer(player);
                 }
             });
         },  (int) ((config.getInt("synchronization.join-delay") / 1000F) * 20));
