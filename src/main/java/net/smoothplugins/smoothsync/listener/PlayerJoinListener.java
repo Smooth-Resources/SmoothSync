@@ -44,7 +44,6 @@ public class PlayerJoinListener implements Listener {
         Bukkit.getPluginManager().callEvent(dataCleanEvent);
 
         if (!dataCleanEvent.isCancelled()) {
-            // TODO: Hacer que al guardar cada X tiempo no se guarde justo ahora.
             player.getInventory().clear();
             player.getEnderChest().clear();
             player.setExp(0);

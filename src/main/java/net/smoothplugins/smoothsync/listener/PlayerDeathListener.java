@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
+import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -31,11 +32,15 @@ public class PlayerDeathListener implements Listener {
     private UserService userService;
     @Inject @Named("config")
     private Configuration config;
+    @Inject
+    private UserSaver userSaver;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        if (!userSaver.containsPlayer(player)) return;
+
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Player player = event.getEntity();
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
             if (user == null) return;
 

@@ -2,6 +2,7 @@ package net.smoothplugins.smoothsync.listener;
 
 import com.google.inject.Inject;
 import net.smoothplugins.smoothsync.SmoothSync;
+import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -25,10 +26,13 @@ public class PlayerQuitListener implements Listener {
     private SmoothSync plugin;
     @Inject
     private UserTranslator userTranslator;
+    @Inject
+    private UserSaver userSaver;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        if (!userSaver.containsPlayer(player)) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
@@ -38,6 +42,7 @@ public class PlayerQuitListener implements Listener {
             destinations.add(Destination.CACHE);
             destinations.add(Destination.STORAGE);
             DataUpdateEvent dataUpdateEvent = new DataUpdateEvent(player, user, DataUpdateEvent.Cause.LEAVE, destinations);
+            Bukkit.getPluginManager().callEvent(dataUpdateEvent);
 
             userTranslator.translateToUser(user, player);
             userService.update(user, destinations.toArray(new Destination[0]));

@@ -36,6 +36,8 @@ public class MainLoader {
         userSaver.stop();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!userSaver.containsPlayer(player)) return;
+
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
             if (user == null) return;
 
@@ -43,6 +45,7 @@ public class MainLoader {
             destinations.add(Destination.CACHE);
             destinations.add(Destination.STORAGE);
             DataUpdateEvent dataUpdateEvent = new DataUpdateEvent(player, user, DataUpdateEvent.Cause.STOP, destinations);
+            Bukkit.getPluginManager().callEvent(dataUpdateEvent);
 
             userTranslator.translateToUser(user, player);
             userService.update(user, destinations.toArray(new Destination[0]));
