@@ -44,7 +44,7 @@ public class MainLoader {
             Set<Destination> destinations = new HashSet<>();
             destinations.add(Destination.CACHE);
             destinations.add(Destination.STORAGE);
-            AsyncDataUpdateEvent dataUpdateEvent = new AsyncDataUpdateEvent(player, true, user, AsyncDataUpdateEvent.Cause.STOP, destinations);
+            AsyncDataUpdateEvent dataUpdateEvent = new AsyncDataUpdateEvent(player, false, user, AsyncDataUpdateEvent.Cause.STOP, destinations);
             Bukkit.getPluginManager().callEvent(dataUpdateEvent);
 
             userTranslator.translateToUser(user, player);

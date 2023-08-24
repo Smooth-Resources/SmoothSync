@@ -5,7 +5,6 @@ import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
-import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
