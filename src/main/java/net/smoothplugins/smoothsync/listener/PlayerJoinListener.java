@@ -49,6 +49,8 @@ public class PlayerJoinListener implements Listener {
         }
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            if (player.isOnline()) return;
+
             User user = userService.getUserByUUID(player.getUniqueId()).orElseGet(() -> {
                 User newUser = new User(player.getUniqueId());
                 userTranslator.translateToUser(newUser, player);
