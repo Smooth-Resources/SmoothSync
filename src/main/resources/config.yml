@@ -9,6 +9,7 @@ mongo:
 
 synchronization:
   join-delay: 500 # Delay in milliseconds before a player is synchronized after joining the server
+  prevent-damage: true # Prevent damage to the player while synchronizing
   features:
     inventory: true
     ender-chest: true
