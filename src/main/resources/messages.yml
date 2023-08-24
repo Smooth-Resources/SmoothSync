@@ -1,0 +1,20 @@
+event:
+  data-sync-event:
+    chat:
+      enabled: false
+      content:
+        - "&aFirst line"
+        - "<red>Second line</red>"
+    actionbar:
+      enabled: true
+      content: "&7Your data has been synchronized!"
+    title:
+      enabled: false
+      title: "&cTitle"
+      subtitle: "&dSubtitle"
+      fadeIn: 0.5
+      stay: 2
+      fadeOut: 0.5
+    sound:
+      enabled: true
+      content: "ENTITY_PUFFER_FISH_BLOW_UP"
