@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsyncapi.event.DataCleanEvent;
+import net.smoothplugins.smoothsyncapi.event.DataSyncEvent;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
 import net.smoothplugins.smoothsyncapi.user.UserTranslator;
@@ -66,9 +67,12 @@ public class PlayerJoinListener implements Listener {
             }
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                userTranslator.translateToPlayer(user, player);
+                DataSyncEvent dataSyncEvent = new DataSyncEvent(player, user);
+                Bukkit.getPluginManager().callEvent(dataSyncEvent);
+                if (!dataSyncEvent.isCancelled()) {
+                    userTranslator.translateToPlayer(user, player);
+                }
             });
-
         },  (int) ((config.getInt("synchronization.join-delay") / 1000F) * 20));
     }
 }
