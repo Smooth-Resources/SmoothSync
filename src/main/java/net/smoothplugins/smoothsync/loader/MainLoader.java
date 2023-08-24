@@ -2,7 +2,7 @@ package net.smoothplugins.smoothsync.loader;
 
 import com.google.inject.Inject;
 import net.smoothplugins.smoothsync.user.UserSaver;
-import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
+import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
@@ -44,7 +44,7 @@ public class MainLoader {
             Set<Destination> destinations = new HashSet<>();
             destinations.add(Destination.CACHE);
             destinations.add(Destination.STORAGE);
-            DataUpdateEvent dataUpdateEvent = new DataUpdateEvent(player, user, DataUpdateEvent.Cause.STOP, destinations);
+            AsyncDataUpdateEvent dataUpdateEvent = new AsyncDataUpdateEvent(player, true, user, AsyncDataUpdateEvent.Cause.STOP, destinations);
             Bukkit.getPluginManager().callEvent(dataUpdateEvent);
 
             userTranslator.translateToUser(user, player);

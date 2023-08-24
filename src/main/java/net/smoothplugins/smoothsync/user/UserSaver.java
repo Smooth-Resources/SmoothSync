@@ -4,13 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
+import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
 import net.smoothplugins.smoothsyncapi.user.UserTranslator;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -64,7 +64,7 @@ public class UserSaver {
                 destinations.add(Destination.STORAGE);
             }
 
-            DataUpdateEvent dataUpdateEvent = new DataUpdateEvent(player, user, DataUpdateEvent.Cause.INTERVAL, destinations);
+            AsyncDataUpdateEvent dataUpdateEvent = new AsyncDataUpdateEvent(player, true, user, AsyncDataUpdateEvent.Cause.INTERVAL, destinations);
             Bukkit.getPluginManager().callEvent(dataUpdateEvent);
 
             if (dataUpdateEvent.isCancelled()) return;
