@@ -21,3 +21,17 @@ synchronization:
     location: false
     advancements: true
     statistics: true
+
+data-update:
+  # When Performance Mode is enabled (performance-mode: true):
+  # - Regular Interval Update: REDIS
+  # - Update on Quit: REDIS & MONGODB
+  # - Update on Death: REDIS
+  # - Update on Server Stop: REDIS & MONGODB
+  #
+  # When Performance Mode is disabled (performance-mode: false):
+  # - Regular Interval Update: REDIS & MONGODB
+  # - Update on Quit: REDIS & MONGODB
+  # - Update on Death: REDIS & MONGODB
+  # - Update on Server Stop: REDIS & MONGODB
+  performance-mode: true
