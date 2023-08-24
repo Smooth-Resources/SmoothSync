@@ -1,6 +1,16 @@
 package net.smoothplugins.smoothsync.loader;
 
 import com.google.inject.Inject;
+import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
+import net.smoothplugins.smoothsyncapi.service.Destination;
+import net.smoothplugins.smoothsyncapi.user.User;
+import net.smoothplugins.smoothsyncapi.user.UserService;
+import net.smoothplugins.smoothsyncapi.user.UserTranslator;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainLoader {
 
@@ -8,6 +18,10 @@ public class MainLoader {
     private ListenerLoader listenerLoader;
     @Inject
     private CommandLoader commandLoader;
+    @Inject
+    private UserService userService;
+    @Inject
+    private UserTranslator userTranslator;
 
     public void load() {
         listenerLoader.load();
@@ -15,6 +29,18 @@ public class MainLoader {
     }
 
     public void unload() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
+            if (user == null) return;
 
+            Set<Destination> destinations = new HashSet<>();
+            destinations.add(Destination.CACHE);
+            destinations.add(Destination.STORAGE);
+            DataUpdateEvent dataUpdateEvent = new DataUpdateEvent(player, user, DataUpdateEvent.Cause.STOP, destinations);
+
+            userTranslator.translateToUser(user, player);
+            userService.update(user, destinations.toArray(new Destination[0]));
+            userService.setTTLOfCacheByUUID(user.getUuid(), 600); // 10 minutes
+        }
     }
 }
