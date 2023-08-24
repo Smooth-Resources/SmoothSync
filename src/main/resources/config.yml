@@ -35,3 +35,4 @@ data-update:
   # - Update on Death: REDIS & MONGODB
   # - Update on Server Stop: REDIS & MONGODB
   performance-mode: true
+  save-interval: 300 # Interval in seconds between regular updates

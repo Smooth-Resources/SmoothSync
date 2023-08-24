@@ -1,6 +1,7 @@
 package net.smoothplugins.smoothsync.loader;
 
 import com.google.inject.Inject;
+import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.DataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -22,13 +23,18 @@ public class MainLoader {
     private UserService userService;
     @Inject
     private UserTranslator userTranslator;
+    @Inject
+    private UserSaver userSaver;
 
     public void load() {
         listenerLoader.load();
         commandLoader.load();
+        userSaver.init();
     }
 
     public void unload() {
+        userSaver.stop();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
             if (user == null) return;
