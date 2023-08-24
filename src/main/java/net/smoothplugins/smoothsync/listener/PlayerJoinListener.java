@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerJoinListener implements Listener {
 
@@ -28,21 +29,28 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!userService.containsByUUID(player.getUniqueId())) {
-            User user = new User(player.getUniqueId());
-            userTranslator.translateToUser(user, player);
-            userService.create(user);
-            userService.loadToCache(user);
-        }
 
-        // TODO: Hacer que al guardar cada X tiempo no se guarde justo ahora. Limpiar más cosas del user.
+        ItemStack[] contentsBackup = player.getInventory().getContents();
+        ItemStack[] enderChestBackup = player.getEnderChest().getContents();
+        float expBackup = player.getExp();
+        int levelBackup = player.getLevel();
+
+        // TODO: Hacer que al guardar cada X tiempo no se guarde justo ahora.
         player.getInventory().clear();
+        player.getEnderChest().clear();
+        player.setExp(0);
+        player.setLevel(0);
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             User user = userService.getUserByUUID(player.getUniqueId()).orElseGet(() -> {
-                // This code never runs, but it's here just in case.
                 User newUser = new User(player.getUniqueId());
                 userTranslator.translateToUser(newUser, player);
+
+                newUser.setInventoryItems(contentsBackup);
+                newUser.setEnderChestItems(enderChestBackup);
+                newUser.setExp(expBackup);
+                newUser.setLevel(levelBackup);
+
                 userService.create(newUser);
                 return newUser;
             });
