@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
+import net.smoothplugins.smoothsyncapi.event.DataCleanEvent;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
 import net.smoothplugins.smoothsyncapi.user.UserTranslator;
@@ -35,11 +36,16 @@ public class PlayerJoinListener implements Listener {
         float expBackup = player.getExp();
         int levelBackup = player.getLevel();
 
-        // TODO: Hacer que al guardar cada X tiempo no se guarde justo ahora.
-        player.getInventory().clear();
-        player.getEnderChest().clear();
-        player.setExp(0);
-        player.setLevel(0);
+        DataCleanEvent dataCleanEvent = new DataCleanEvent(player);
+        Bukkit.getPluginManager().callEvent(dataCleanEvent);
+
+        if (!dataCleanEvent.isCancelled()) {
+            // TODO: Hacer que al guardar cada X tiempo no se guarde justo ahora.
+            player.getInventory().clear();
+            player.getEnderChest().clear();
+            player.setExp(0);
+            player.setLevel(0);
+        }
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             User user = userService.getUserByUUID(player.getUniqueId()).orElseGet(() -> {
