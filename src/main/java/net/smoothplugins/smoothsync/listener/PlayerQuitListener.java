@@ -29,7 +29,7 @@ public class PlayerQuitListener implements Listener {
     @Inject
     private UserSaver userSaver;
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (!userSaver.containsPlayer(player)) return;
