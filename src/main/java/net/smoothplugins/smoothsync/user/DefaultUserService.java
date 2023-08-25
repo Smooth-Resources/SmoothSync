@@ -83,6 +83,28 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    public Optional<User> requestUpdatedUserByUUID(UUID uuid) {
+        if (cacheContainsByUUID(uuid)) {
+            if (redisStorage.hasTTL(uuid.toString())) {
+                return getUserByUUID(uuid);
+            } else {
+                // TODO: Request update with message
+                return null;
+            }
+        } else {
+            return Optional.ofNullable(serializer.deserialize(mongoStorage.get("_id", uuid.toString()), User.class));
+        }
+    }
+
+    @Override
+    public Optional<User> requestUpdatedUserByUsername(String username) {
+        UUID uuid = getUUIDByUsername(username);
+        if (uuid == null) return Optional.empty();
+
+        return requestUpdatedUserByUUID(uuid);
+    }
+
+    @Override
     public void deleteByUUID(UUID uuid, Destination... destinations) {
         for (Destination destination : destinations) {
             switch (destination) {
