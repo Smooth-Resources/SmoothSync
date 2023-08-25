@@ -2,9 +2,13 @@ package net.smoothplugins.smoothsync.user;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import net.smoothplugins.smoothbase.messenger.Messenger;
+import net.smoothplugins.smoothbase.messenger.Response;
 import net.smoothplugins.smoothbase.serializer.Serializer;
 import net.smoothplugins.smoothbase.storage.MongoStorage;
 import net.smoothplugins.smoothbase.storage.RedisStorage;
+import net.smoothplugins.smoothsync.messenger.message.RequestUpdatedUserMessage;
+import net.smoothplugins.smoothsync.messenger.message.SendUpdatedUserMessage;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
@@ -24,6 +28,8 @@ public class DefaultUserService implements UserService {
     private Serializer serializer;
     @Inject
     private SmoothUsersAPI smoothUsersAPI;
+    @Inject
+    private Messenger messenger;
 
     @Override
     public void create(User user) {
@@ -83,13 +89,34 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public Optional<User> requestUpdatedUserByUUID(UUID uuid) {
+    public Optional<User> requestUpdatedUserByUUID(UUID uuid) throws InterruptedException {
         if (cacheContainsByUUID(uuid)) {
             if (redisStorage.hasTTL(uuid.toString())) {
                 return getUserByUUID(uuid);
             } else {
-                // TODO: Request update with message
-                return null;
+                TestResponse testResponse = new TestResponse(); // TODO: Cambiar este objeto.
+
+                RequestUpdatedUserMessage message = new RequestUpdatedUserMessage(uuid);
+                messenger.sendRequest(serializer.serialize(message), new Response() {
+                    @Override
+                    public void onSuccess(String channel, String JSON) {
+                        // Return user
+                        SendUpdatedUserMessage sendUpdatedUserMessage = serializer.deserialize(JSON, SendUpdatedUserMessage.class);
+                        testResponse.setUser(sendUpdatedUserMessage.getUser());
+                    }
+
+                    @Override
+                    public void onFail(String channel) {
+                        // Return user from storage or cache
+                        testResponse.setUser(getUserByUUID(uuid).orElse(null));
+                    }
+                }, 3000L); // TODO: Hacer configurable el timeout
+
+                while (!testResponse.isExecuted()) {
+                    Thread.sleep(100L); // TODO: Mejorar esto, añadir timeout o maxtries.
+                }
+
+                return Optional.ofNullable(testResponse.getUser());
             }
         } else {
             return Optional.ofNullable(serializer.deserialize(mongoStorage.get("_id", uuid.toString()), User.class));
@@ -97,7 +124,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public Optional<User> requestUpdatedUserByUsername(String username) {
+    public Optional<User> requestUpdatedUserByUsername(String username) throws InterruptedException {
         UUID uuid = getUUIDByUsername(username);
         if (uuid == null) return Optional.empty();
 
@@ -183,5 +210,23 @@ public class DefaultUserService implements UserService {
         if (user == null) return null;
 
         return user.getUuid();
+    }
+
+    private class TestResponse {
+        private boolean executed;
+        private User user;
+
+        public boolean isExecuted() {
+            return executed;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+            this.executed = true;
+        }
     }
 }
