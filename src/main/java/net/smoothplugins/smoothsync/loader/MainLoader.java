@@ -1,6 +1,7 @@
 package net.smoothplugins.smoothsync.loader;
 
 import com.google.inject.Inject;
+import net.smoothplugins.smoothbase.messenger.Messenger;
 import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
@@ -25,15 +26,19 @@ public class MainLoader {
     private UserTranslator userTranslator;
     @Inject
     private UserSaver userSaver;
+    @Inject
+    private Messenger messenger;
 
     public void load() {
         listenerLoader.load();
         commandLoader.load();
         userSaver.init();
+        messenger.register();
     }
 
     public void unload() {
         userSaver.stop();
+        messenger.unregister();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!userSaver.containsPlayer(player)) return;
