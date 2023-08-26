@@ -118,7 +118,7 @@ public class DefaultUserService implements UserService {
             public void onFail(String s) {
                 completableFuture.complete(getUserByUUID(uuid).orElse(null));
             }
-        }, config.getInt("updated-user-request.timeout"));
+        }, config.getInt("synchronization.timeouts.updated-user-request"));
 
         try {
             return Optional.ofNullable(completableFuture.get());
@@ -217,7 +217,7 @@ public class DefaultUserService implements UserService {
     public boolean hasTTLOfCacheByUsername(String username) {
         UUID uuid = getUUIDByUsername(username);
         if (uuid == null) return false;
-        
+
         return hasTTLOfCacheByUUID(uuid);
     }
 

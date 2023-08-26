@@ -8,6 +8,9 @@ mongo:
   database: "SmoothSync"
 
 synchronization:
+  timeouts: # Timeouts in milliseconds
+    join: 2000
+    updated-user-request: 2000
   join-delay: 500 # Delay in milliseconds before a player is synchronized after joining the server
   prevent-damage: true # Prevent damage to the player while synchronizing
   features:
@@ -38,6 +41,3 @@ data-update:
   performance-mode: true
   save-interval: 300 # Interval in seconds between regular updates
   update-on-death: true
-
-updated-user-request:
-  timeout: 1000 # Timeout in milliseconds.
