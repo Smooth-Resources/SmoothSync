@@ -41,3 +41,8 @@ data-update:
   performance-mode: true
   save-interval: 300 # Interval in seconds between regular updates
   update-on-death: true
+
+invsee:
+  enabled: true
+  menu:
+    title: "&8%player%'s inventory"

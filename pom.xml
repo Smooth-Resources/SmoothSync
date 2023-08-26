@@ -101,5 +101,10 @@
             <version>v1.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>es.virtualhit.virtualmenu</groupId>
+            <artifactId>VirtualMenu</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
