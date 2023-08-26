@@ -2,6 +2,7 @@ package net.smoothplugins.smoothsync.user;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothbase.messenger.Messenger;
 import net.smoothplugins.smoothbase.messenger.Response;
 import net.smoothplugins.smoothbase.serializer.Serializer;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DefaultUserService implements UserService {
 
@@ -30,6 +32,8 @@ public class DefaultUserService implements UserService {
     private SmoothUsersAPI smoothUsersAPI;
     @Inject
     private Messenger messenger;
+    @Inject @Named("config")
+    private Configuration config;
 
     @Override
     public void create(User user) {
@@ -90,36 +94,36 @@ public class DefaultUserService implements UserService {
 
     @Override
     public Optional<User> requestUpdatedUserByUUID(UUID uuid) throws InterruptedException {
-        if (cacheContainsByUUID(uuid)) {
-            if (redisStorage.hasTTL(uuid.toString())) {
-                return getUserByUUID(uuid);
-            } else {
-                TestResponse testResponse = new TestResponse(); // TODO: Cambiar este objeto.
-
-                RequestUpdatedUserMessage message = new RequestUpdatedUserMessage(uuid);
-                messenger.sendRequest(serializer.serialize(message), new Response() {
-                    @Override
-                    public void onSuccess(String channel, String JSON) {
-                        // Return user
-                        SendUpdatedUserMessage sendUpdatedUserMessage = serializer.deserialize(JSON, SendUpdatedUserMessage.class);
-                        testResponse.setUser(sendUpdatedUserMessage.getUser());
-                    }
-
-                    @Override
-                    public void onFail(String channel) {
-                        // Return user from storage or cache
-                        testResponse.setUser(getUserByUUID(uuid).orElse(null));
-                    }
-                }, 3000L); // TODO: Hacer configurable el timeout
-
-                while (!testResponse.isExecuted()) {
-                    Thread.sleep(100L); // TODO: Mejorar esto, añadir timeout o maxtries.
-                }
-
-                return Optional.ofNullable(testResponse.getUser());
-            }
-        } else {
+        if (!cacheContainsByUUID(uuid)) {
+            // User is disconnected and it is not in cache
             return Optional.ofNullable(serializer.deserialize(mongoStorage.get("_id", uuid.toString()), User.class));
+        }
+
+        if (redisStorage.hasTTL(uuid.toString())) {
+            // User is disconnected but it is in cache
+            return getUserByUUID(uuid);
+        }
+
+        // User is online, so we try to get an updated version of it
+        CompletableFuture<User> completableFuture = new CompletableFuture<>();
+        RequestUpdatedUserMessage requestUpdatedUserMessage = new RequestUpdatedUserMessage(uuid);
+        messenger.sendRequest(serializer.serialize(requestUpdatedUserMessage), new Response() {
+            @Override
+            public void onSuccess(String channel, String JSON) {
+                SendUpdatedUserMessage sendUpdatedUserMessage = serializer.deserialize(JSON, SendUpdatedUserMessage.class);
+                completableFuture.complete(sendUpdatedUserMessage.getUser());
+            }
+
+            @Override
+            public void onFail(String s) {
+                completableFuture.complete(getUserByUUID(uuid).orElse(null));
+            }
+        }, config.getInt("updated-user-request.timeout"));
+
+        try {
+            return Optional.ofNullable(completableFuture.get());
+        } catch (Exception ignored) {
+            return null;
         }
     }
 
@@ -212,7 +216,7 @@ public class DefaultUserService implements UserService {
         return user.getUuid();
     }
 
-    private class TestResponse {
+    private class RequestedUser {
         private boolean executed;
         private User user;
 

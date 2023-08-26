@@ -38,3 +38,6 @@ data-update:
   performance-mode: true
   save-interval: 300 # Interval in seconds between regular updates
   update-on-death: true
+
+updated-user-request:
+  timeout: 1000 # Timeout in milliseconds.
