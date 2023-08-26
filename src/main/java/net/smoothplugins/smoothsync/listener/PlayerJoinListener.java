@@ -34,7 +34,10 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        ItemStack[] contentsBackup = player.getInventory().getContents();
+
+        ItemStack[] storageContentsBackup = player.getInventory().getStorageContents();
+        ItemStack[] armorContentsBackup = player.getInventory().getArmorContents();
+        ItemStack[] extraContentsBackup = player.getInventory().getExtraContents();
         ItemStack[] enderChestBackup = player.getEnderChest().getContents();
         float expBackup = player.getExp();
         int levelBackup = player.getLevel();
@@ -55,7 +58,9 @@ public class PlayerJoinListener implements Listener {
                     User newUser = new User(player.getUniqueId());
                     userTranslator.translateToUser(newUser, player);
 
-                    newUser.setInventoryItems(contentsBackup);
+                    newUser.setInventoryStorageContents(storageContentsBackup);
+                    newUser.setInventoryArmorContents(armorContentsBackup);
+                    newUser.setInventoryExtraContents(extraContentsBackup);
                     newUser.setEnderChestItems(enderChestBackup);
                     newUser.setExp(expBackup);
                     newUser.setLevel(levelBackup);
