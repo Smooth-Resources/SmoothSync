@@ -27,5 +27,8 @@ command:
       - "&7/smoothsync reload &8- &fReloads the config files."
       - "&7/smoothsync edit-inventory <player> &8- &fEdits the inventory of a player."
       - "&7/smoothsync edit-enderchest <player> &8- &fEdits the enderchest of a player."
+    reload:
+      no-permission: "&cYou don't have permission to execute this command."
+      success: "&a&lSYNC &7&l» &fThe config files have been reloaded."
     edit-inventory:
     edit-enderchest:
