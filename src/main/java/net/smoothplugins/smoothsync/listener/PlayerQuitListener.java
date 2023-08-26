@@ -1,7 +1,10 @@
 package net.smoothplugins.smoothsync.listener;
 
 import com.google.inject.Inject;
+import net.smoothplugins.smoothbase.messenger.Messenger;
+import net.smoothplugins.smoothbase.serializer.Serializer;
 import net.smoothplugins.smoothsync.SmoothSync;
+import net.smoothplugins.smoothsync.messenger.message.QuitNotificationMessage;
 import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
@@ -28,6 +31,10 @@ public class PlayerQuitListener implements Listener {
     private UserTranslator userTranslator;
     @Inject
     private UserSaver userSaver;
+    @Inject
+    private Messenger messenger;
+    @Inject
+    private Serializer serializer;
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
@@ -47,6 +54,9 @@ public class PlayerQuitListener implements Listener {
             userTranslator.translateToUser(user, player);
             userService.update(user, destinations.toArray(new Destination[0]));
             userService.setTTLOfCacheByUUID(user.getUuid(), 600); // 10 minutes
+
+            QuitNotificationMessage message = new QuitNotificationMessage(user.getUuid());
+            messenger.send(serializer.serialize(message));
         });
     }
 }
