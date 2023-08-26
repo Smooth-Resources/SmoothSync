@@ -28,7 +28,9 @@ public class DefaultUserTranslator implements UserTranslator {
 
     @Override
     public void translateToUser(User user, Player player) {
-        user.setInventoryItems(player.getInventory().getContents());
+        user.setInventoryStorageContents(player.getInventory().getStorageContents());
+        user.setInventoryArmorContents(player.getInventory().getArmorContents());
+        user.setInventoryExtraContents(player.getInventory().getExtraContents());
         user.setHeldItemSlot(player.getInventory().getHeldItemSlot());
         user.setEnderChestItems(player.getEnderChest().getContents());
         user.setGameMode(player.getGameMode());
@@ -106,14 +108,17 @@ public class DefaultUserTranslator implements UserTranslator {
             return;
         }
 
-        if (section.getBoolean("inventory") && user.getInventoryItems() != null) {
-            try {
-                player.getInventory().setHeldItemSlot(user.getHeldItemSlot());
-                player.getInventory().setContents(user.getInventoryItems());
-            } catch (IllegalArgumentException ignored) {
-                for (int i = 0; i < player.getInventory().getSize(); i++) {
-                    player.getInventory().setItem(i, user.getInventoryItems()[i]);
-                }
+        if (section.getBoolean("inventory")) {
+            if (user.getInventoryStorageContents() != null) {
+                player.getInventory().setStorageContents(user.getInventoryStorageContents());
+            }
+
+            if (user.getInventoryArmorContents() != null) {
+                player.getInventory().setArmorContents(user.getInventoryArmorContents());
+            }
+
+            if (user.getInventoryExtraContents() != null) {
+                player.getInventory().setExtraContents(user.getInventoryExtraContents());
             }
         }
 
