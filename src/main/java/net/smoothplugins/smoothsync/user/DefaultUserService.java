@@ -208,29 +208,24 @@ public class DefaultUserService implements UserService {
         return setTTLOfCacheByUUID(uuid, seconds);
     }
 
+    @Override
+    public boolean hasTTLOfCacheByUUID(UUID uuid) {
+        return redisStorage.hasTTL(uuid.toString());
+    }
+
+    @Override
+    public boolean hasTTLOfCacheByUsername(String username) {
+        UUID uuid = getUUIDByUsername(username);
+        if (uuid == null) return false;
+        
+        return hasTTLOfCacheByUUID(uuid);
+    }
+
     @Nullable
     private UUID getUUIDByUsername(String username) {
         net.smoothplugins.smoothusersapi.user.User user = smoothUsersAPI.getUserService().getUserByUsername(username).orElse(null);
         if (user == null) return null;
 
         return user.getUuid();
-    }
-
-    private class RequestedUser {
-        private boolean executed;
-        private User user;
-
-        public boolean isExecuted() {
-            return executed;
-        }
-
-        public User getUser() {
-            return user;
-        }
-
-        public void setUser(User user) {
-            this.user = user;
-            this.executed = true;
-        }
     }
 }
