@@ -75,18 +75,8 @@ public class PlayerJoinListener implements Listener {
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                 if (!player.isOnline() || userSaver.containsPlayer(player)) return;
 
-                User user = userService.getUserByUUID(player.getUniqueId()).orElseGet(() -> {
-                    User newUser = new User(player.getUniqueId());
-                    userTranslator.translateToUser(newUser, player);
-
-                    newUser.setInventoryItems(contentsBackup);
-                    newUser.setEnderChestItems(enderChestBackup);
-                    newUser.setExp(expBackup);
-                    newUser.setLevel(levelBackup);
-
-                    userService.create(newUser);
-                    return newUser;
-                });
+                User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
+                if (user == null) return;
 
                 if (!userService.removeTTLFromCacheByUUID(user.getUuid())) {
                     userService.loadToCache(user);
@@ -107,56 +97,4 @@ public class PlayerJoinListener implements Listener {
             }
         });
     }
-
-    /*
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        ItemStack[] contentsBackup = player.getInventory().getContents();
-        ItemStack[] enderChestBackup = player.getEnderChest().getContents();
-        float expBackup = player.getExp();
-        int levelBackup = player.getLevel();
-
-        DataCleanEvent dataCleanEvent = new DataCleanEvent(player);
-        Bukkit.getPluginManager().callEvent(dataCleanEvent);
-
-        if (!dataCleanEvent.isCancelled()) {
-            player.getInventory().clear();
-            player.getEnderChest().clear();
-            player.setExp(0);
-            player.setLevel(0);
-        }
-
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            if (!player.isOnline()) return;
-
-            User user = userService.getUserByUUID(player.getUniqueId()).orElseGet(() -> {
-                User newUser = new User(player.getUniqueId());
-                userTranslator.translateToUser(newUser, player);
-
-                newUser.setInventoryItems(contentsBackup);
-                newUser.setEnderChestItems(enderChestBackup);
-                newUser.setExp(expBackup);
-                newUser.setLevel(levelBackup);
-
-                userService.create(newUser);
-                return newUser;
-            });
-
-            if (!userService.removeTTLFromCacheByUUID(user.getUuid())) {
-                userService.loadToCache(user);
-            }
-
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                DataSyncEvent dataSyncEvent = new DataSyncEvent(player, user);
-                Bukkit.getPluginManager().callEvent(dataSyncEvent);
-                if (!dataSyncEvent.isCancelled()) {
-                    userTranslator.translateToPlayer(user, player);
-                    userSaver.addPlayer(player);
-                }
-            });
-        },  (int) ((config.getInt("synchronization.join-delay") / 1000F) * 20));
-    }
-     */
 }
