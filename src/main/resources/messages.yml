@@ -18,3 +18,14 @@ event:
     sound:
       enabled: true
       content: "ENTITY_PUFFER_FISH_BLOW_UP"
+
+command:
+  smoothsync:
+    no-permission: "&cYou don't have permission to execute this command."
+    help:
+      - "&a&lSYNC &7&l» &fAvailable commands:"
+      - "&7/smoothsync reload &8- &fReloads the config files."
+      - "&7/smoothsync edit-inventory <player> &8- &fEdits the inventory of a player."
+      - "&7/smoothsync edit-enderchest <player> &8- &fEdits the enderchest of a player."
+    edit-inventory:
+    edit-enderchest:
