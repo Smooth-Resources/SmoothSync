@@ -39,7 +39,8 @@ public final class SmoothSync extends JavaPlugin {
                 new StorageModule(),
                 new UserModule(),
                 new SerializerModule(),
-                new MessengerModule()
+                new MessengerModule(),
+                new CommandModule()
         );
 
         injector.getInstance(MainLoader.class).load();

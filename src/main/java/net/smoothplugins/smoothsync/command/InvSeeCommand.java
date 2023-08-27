@@ -1,7 +1,5 @@
 package net.smoothplugins.smoothsync.command;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.menu.InvSeeMenu;
@@ -9,24 +7,27 @@ import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class InvSeeCommand implements CommandExecutor {
+public class InvSeeCommand extends Command {
 
-    @Inject @Named("messages")
     private Configuration messages;
-    @Inject
     private UserService userService;
-    @Inject
     private SmoothSync plugin;
 
+    public InvSeeCommand(@NotNull String name, Configuration messages, UserService userService, SmoothSync plugin) {
+        super(name);
+        this.messages = messages;
+        this.userService = userService;
+        this.plugin = plugin;
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(messages.getComponent("command.invsee.not-a-player"));
             return true;

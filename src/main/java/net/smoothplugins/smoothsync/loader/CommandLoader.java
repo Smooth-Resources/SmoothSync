@@ -7,6 +7,7 @@ import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.command.EnderSeeCommand;
 import net.smoothplugins.smoothsync.command.InvSeeCommand;
 import net.smoothplugins.smoothsync.command.SmoothSyncCommand;
+import org.bukkit.Bukkit;
 
 public class CommandLoader {
 
@@ -25,11 +26,11 @@ public class CommandLoader {
         plugin.getCommand("smoothsync").setExecutor(smoothSyncCommand);
 
         if (config.getBoolean("invsee.enabled")) {
-            plugin.getCommand("invsee").setExecutor(invSeeCommand);
+            Bukkit.getCommandMap().register("invsee", "smoothsync", invSeeCommand);
         }
 
         if (config.getBoolean("endersee.enabled")) {
-            plugin.getCommand("endersee").setExecutor(enderSeeCommand);
+            Bukkit.getCommandMap().register("endersee", "smoothsync", enderSeeCommand);
         }
     }
 }

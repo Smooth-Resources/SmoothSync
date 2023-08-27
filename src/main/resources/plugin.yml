@@ -6,5 +6,3 @@ depend:
   - SmoothUsers
 commands:
   smoothsync:
-  invsee:
-  endersee:
