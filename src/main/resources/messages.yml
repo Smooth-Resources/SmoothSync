@@ -4,7 +4,7 @@ event:
       enabled: false
       content:
         - "&aFirst line"
-        - "<red>Second line</red>"
+        - "<red>Second line</red>" # You can use mini-message format (https://docs.advntr.dev/minimessage/index.html).
     actionbar:
       enabled: true
       content: "&7Your data has been synchronized!"

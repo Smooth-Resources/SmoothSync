@@ -21,7 +21,6 @@ public final class SmoothSync extends JavaPlugin {
         // Plugin startup logic
         Configuration config = new Configuration(this, "config");
         Configuration messages = new Configuration(this, "messages");
-        Configuration invSeeMenu = new Configuration(this, "menu/invsee-menu");
 
         String uri = config.getString("mongo.uri");
         String databaseName = config.getString("mongo.database");
@@ -35,7 +34,7 @@ public final class SmoothSync extends JavaPlugin {
 
         injector = Guice.createInjector(
                 new SmoothSyncModule(this, getSmoothUsersAPI()),
-                new ConfigurationModule(config, messages, invSeeMenu),
+                new ConfigurationModule(config, messages),
                 new ConnectionModule(mongoConnection, redisConnection),
                 new StorageModule(),
                 new UserModule(),
