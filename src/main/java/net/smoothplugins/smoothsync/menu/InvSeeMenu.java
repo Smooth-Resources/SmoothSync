@@ -30,6 +30,8 @@ public class InvSeeMenu extends Menu {
     }
 
     public void open() {
+        placeholders.put("%player%", super.getPlayer().getName());
+
         Component title = config.getComponent("invsee.menu.title", placeholders);
         int size = 45;
         MenuType type = MenuType.CHEST;
