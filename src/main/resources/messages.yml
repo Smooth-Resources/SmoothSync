@@ -39,3 +39,10 @@ command:
     loading: "&a&lSYNC &8» &fGetting the inventory of &a%player%&f..."
     user-not-found: "&cThe player &f%player% &cwas not found."
     success: "&a&lSYNC &8» &fOpening the inventory of &a%player%&f..."
+  endersee:
+    not-a-player: "&cYou must be a player to execute this command."
+    no-permission: "&cYou don't have permission to execute this command."
+    usage: "&cUsage: /endersee <player>"
+    loading: "&a&lSYNC &8» &fGetting the enderchest of &a%player%&f..."
+    user-not-found: "&cThe player &f%player% &cwas not found."
+    success: "&a&lSYNC &8» &fOpening the enderchest of &a%player%&f..."
