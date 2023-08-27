@@ -46,3 +46,7 @@ invsee:
   enabled: true
   menu:
     title: "&8%player%'s inventory"
+endersee:
+  enabled: true
+  menu:
+    title: "&8%player%'s enderchest"
