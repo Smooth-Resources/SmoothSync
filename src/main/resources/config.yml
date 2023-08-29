@@ -50,3 +50,7 @@ endersee:
   enabled: true
   menu:
     title: "&8%player%'s enderchest"
+smoothsync:
+  edit-inventory:
+    menu:
+      title: "&8Edit %player%'s inventory"
