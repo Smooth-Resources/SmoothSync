@@ -36,13 +36,13 @@ public class EditEnderChestCommand implements Subcommand {
             return;
         }
 
-        if (args.length != 1) {
+        if (args.length != 2) {
             sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.usage"));
             return;
         }
 
         HashMap<String, String> placeholders = new HashMap<>();
-        placeholders.put("%player%", args[0]);
+        placeholders.put("%player%", args[1]);
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
