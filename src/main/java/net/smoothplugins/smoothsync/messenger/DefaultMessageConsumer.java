@@ -5,10 +5,7 @@ import net.smoothplugins.smoothbase.messenger.MessageConsumer;
 import net.smoothplugins.smoothbase.messenger.Messenger;
 import net.smoothplugins.smoothbase.serializer.Serializer;
 import net.smoothplugins.smoothsync.SmoothSync;
-import net.smoothplugins.smoothsync.messenger.message.DefaultMessage;
-import net.smoothplugins.smoothsync.messenger.message.QuitNotificationMessage;
-import net.smoothplugins.smoothsync.messenger.message.RequestUpdatedUserMessage;
-import net.smoothplugins.smoothsync.messenger.message.SendUpdatedUserMessage;
+import net.smoothplugins.smoothsync.messenger.message.*;
 import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.DataSyncEvent;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -58,7 +55,7 @@ public class DefaultMessageConsumer implements MessageConsumer {
         User user = userService.getUserByUUID(message.getUserUUID()).orElse(null);
         userTranslator.translateToUser(user, player);
 
-        SendUpdatedUserMessage sendUpdatedUserMessage = new SendUpdatedUserMessage(user);
+        SendRequestedUpdatedUserMessage sendUpdatedUserMessage = new SendRequestedUpdatedUserMessage(user);
         messenger.sendResponse(serializer.serialize(sendUpdatedUserMessage), identifier);
     }
 
@@ -74,6 +71,13 @@ public class DefaultMessageConsumer implements MessageConsumer {
         }
 
         applyData(user, player);
+    }
+
+    private void consumeUpdatedUserMessage(UpdatedUserMessage message) {
+        Player player = Bukkit.getPlayer(message.getUser().getUuid());
+        if (player == null || !userSaver.containsPlayer(player)) return;
+
+        applyData(message.getUser(), player);
     }
 
     private void applyData(User user, Player player) {
