@@ -9,7 +9,7 @@ import net.smoothplugins.smoothbase.serializer.Serializer;
 import net.smoothplugins.smoothbase.storage.MongoStorage;
 import net.smoothplugins.smoothbase.storage.RedisStorage;
 import net.smoothplugins.smoothsync.messenger.message.RequestUpdatedUserMessage;
-import net.smoothplugins.smoothsync.messenger.message.SendUpdatedUserMessage;
+import net.smoothplugins.smoothsync.messenger.message.SendRequestedUpdatedUserMessage;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
@@ -56,6 +56,10 @@ public class DefaultUserService implements UserService {
                     if (redisStorage.contains(user.getUuid().toString())) {
                         redisStorage.update(user.getUuid().toString(), serializer.serialize(user));
                     }
+                }
+
+                case PLAYER_IF_ONLINE -> {
+
                 }
             }
         }
@@ -110,8 +114,8 @@ public class DefaultUserService implements UserService {
         messenger.sendRequest(serializer.serialize(requestUpdatedUserMessage), new Response() {
             @Override
             public void onSuccess(String channel, String JSON) {
-                SendUpdatedUserMessage sendUpdatedUserMessage = serializer.deserialize(JSON, SendUpdatedUserMessage.class);
-                completableFuture.complete(sendUpdatedUserMessage.getUser());
+                SendRequestedUpdatedUserMessage updatedUserMessage = serializer.deserialize(JSON, SendRequestedUpdatedUserMessage.class);
+                completableFuture.complete(updatedUserMessage.getUser());
             }
 
             @Override
