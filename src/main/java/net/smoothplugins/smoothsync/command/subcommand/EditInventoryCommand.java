@@ -46,7 +46,7 @@ public class EditInventoryCommand implements Subcommand {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.loading", placeholders));
-                User user = userService.requestUpdatedUserByUsername(args[0]).orElse(null);
+                User user = userService.requestUpdatedUserByUsername(args[1]).orElse(null);
                 if (user == null) {
                     player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.user-not-found"));
                     return;
