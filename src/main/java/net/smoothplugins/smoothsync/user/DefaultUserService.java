@@ -10,6 +10,7 @@ import net.smoothplugins.smoothbase.storage.MongoStorage;
 import net.smoothplugins.smoothbase.storage.RedisStorage;
 import net.smoothplugins.smoothsync.messenger.message.RequestUpdatedUserMessage;
 import net.smoothplugins.smoothsync.messenger.message.SendRequestedUpdatedUserMessage;
+import net.smoothplugins.smoothsync.messenger.message.UpdatedUserMessage;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
@@ -59,7 +60,8 @@ public class DefaultUserService implements UserService {
                 }
 
                 case PLAYER_IF_ONLINE -> {
-
+                    UpdatedUserMessage message = new UpdatedUserMessage(user);
+                    messenger.send(serializer.serialize(message));
                 }
             }
         }
