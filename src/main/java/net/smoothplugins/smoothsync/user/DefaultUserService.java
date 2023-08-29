@@ -55,7 +55,9 @@ public class DefaultUserService implements UserService {
 
                 case CACHE_IF_PRESENT -> {
                     if (redisStorage.contains(user.getUuid().toString())) {
+                        long ttl = redisStorage.getTTL(user.getUuid().toString());
                         redisStorage.update(user.getUuid().toString(), serializer.serialize(user));
+                        redisStorage.setTTL(user.getUuid().toString(), (int) ttl);
                     }
                 }
 
