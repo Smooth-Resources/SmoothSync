@@ -72,6 +72,7 @@ public class EditEnderChestMenu extends Menu {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            user.setEnderChestItems(super.getInventory().getContents());
             userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
             super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.updated", placeholders));
         });
