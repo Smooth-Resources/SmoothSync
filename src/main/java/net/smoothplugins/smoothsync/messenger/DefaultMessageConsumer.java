@@ -45,6 +45,11 @@ public class DefaultMessageConsumer implements MessageConsumer {
                 QuitNotificationMessage message = serializer.deserialize(JSON, QuitNotificationMessage.class);
                 consumeQuitNotificationMessage(message);
             }
+
+            case UPDATED_USER -> {
+                UpdatedUserMessage message = serializer.deserialize(JSON, UpdatedUserMessage.class);
+                consumeUpdatedUserMessage(message);
+            }
         }
     }
 
