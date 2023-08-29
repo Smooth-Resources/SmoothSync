@@ -5,8 +5,10 @@ import com.google.inject.Injector;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothbase.connection.MongoConnection;
 import net.smoothplugins.smoothbase.connection.RedisConnection;
+import net.smoothplugins.smoothsync.api.DefaultSmoothSyncAPI;
 import net.smoothplugins.smoothsync.loader.MainLoader;
 import net.smoothplugins.smoothsync.module.*;
+import net.smoothplugins.smoothsyncapi.SmoothSyncAPI;
 import net.smoothplugins.smoothusersapi.SmoothUsersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -44,6 +46,13 @@ public final class SmoothSync extends JavaPlugin {
         );
 
         injector.getInstance(MainLoader.class).load();
+
+        getServer().getServicesManager().register(
+                SmoothSyncAPI.class,
+                injector.getInstance(DefaultSmoothSyncAPI.class),
+                this,
+                org.bukkit.plugin.ServicePriority.Normal
+        );
     }
 
     @Override
