@@ -3,6 +3,7 @@ package net.smoothplugins.smoothsync.command;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothsync.command.subcommand.EditInventoryCommand;
 import net.smoothplugins.smoothsync.command.subcommand.ReloadCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,6 +21,8 @@ public class SmoothSyncCommand implements CommandExecutor, TabCompleter {
     private Configuration messages;
     @Inject
     private ReloadCommand reloadCommand;
+    @Inject
+    private EditInventoryCommand editInventoryCommand;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -39,7 +42,7 @@ public class SmoothSyncCommand implements CommandExecutor, TabCompleter {
             }
 
             case "edit-inventory" -> {
-
+                editInventoryCommand.execute(sender, args);
             }
 
             case "edit-enderchest" -> {

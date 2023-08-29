@@ -31,6 +31,13 @@ command:
       no-permission: "&cYou don't have permission to execute this command."
       success: "&a&lSYNC &8» &fThe config files have been reloaded."
     edit-inventory:
+      not-a-player: "&cYou must be a player to execute this command."
+      no-permission: "&cYou don't have permission to execute this command."
+      usage: "&cUsage: /smoothsync edit-inventory <player>"
+      loading: "&a&lSYNC &8» &fGetting the inventory of &a%player%&f..."
+      user-not-found: "&cThe player &f%player% &cwas not found."
+      success: "&a&lSYNC &8» &fOpening the inventory of &a%player%&f..."
+      updated: "&a&lSYNC &8» &fThe inventory of &a%player% &fhas been updated."
     edit-enderchest:
   invsee:
     not-a-player: "&cYou must be a player to execute this command."
