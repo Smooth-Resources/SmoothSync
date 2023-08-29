@@ -162,8 +162,12 @@ public class DefaultUserTranslator implements UserTranslator {
 
         if (section.getBoolean("advancements") && user.getAdvancements() != null) {
             user.getAdvancements().keySet().forEach(advancement -> {
-                AdvancementProgress progress = player.getAdvancementProgress(advancement);
-                user.getAdvancements().get(advancement).forEach(progress::awardCriteria);
+                try {
+                    AdvancementProgress progress = player.getAdvancementProgress(advancement);
+                    user.getAdvancements().get(advancement).forEach(progress::awardCriteria);
+                } catch (IllegalArgumentException ignored) {
+                    plugin.getLogger().severe("Cannot award criteria for advancement " + advancement + ". All servers are running the same version of Minecraft?");
+                }
             });
         }
 
