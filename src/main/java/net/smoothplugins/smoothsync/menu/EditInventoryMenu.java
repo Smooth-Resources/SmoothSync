@@ -16,6 +16,8 @@ import net.smoothplugins.smoothsyncapi.user.UserService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,9 +85,43 @@ public class EditInventoryMenu extends Menu {
         };
     }
 
+    private ItemStack[] getStorageContents() {
+        Inventory inventory = super.getInventory();
+        ItemStack[] storageContents = new ItemStack[36];
+        for (int i = 0; i < 36; i++) {
+            storageContents[i] = inventory.getItem(i);
+        }
+
+        return storageContents;
+    }
+
+    private ItemStack[] getArmorContents() {
+        Inventory inventory = super.getInventory();
+        ItemStack[] armorContents = new ItemStack[4];
+        for (int i = 0; i < 4; i++) {
+            armorContents[i] = inventory.getItem(i + 36);
+        }
+
+        return armorContents;
+    }
+
+    private ItemStack[] getExtraContents() {
+        Inventory inventory = super.getInventory();
+        ItemStack[] extraContents = new ItemStack[1];
+        for (int i = 0; i < 1; i++) {
+            extraContents[i] = inventory.getItem(i + 44);
+        }
+
+        return extraContents;
+    }
+
     @Override
     public void onClose(InventoryCloseEvent event) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            user.setInventoryStorageContents(getStorageContents());
+            user.setInventoryArmorContents(getArmorContents());
+            user.setInventoryExtraContents(getExtraContents());
+
             userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
             super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-inventory.updated", placeholders));
         });
