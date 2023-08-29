@@ -57,7 +57,7 @@ public class EnderSeeCommand extends Command {
 
                 player.sendMessage(messages.getComponent("command.endersee.success", placeholders));
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    EnderSeeMenu enderSeeMenu = new EnderSeeMenu(player, user);
+                    EnderSeeMenu enderSeeMenu = new EnderSeeMenu(player, user, placeholders);
                     enderSeeMenu.open();
                 });
             } catch (InterruptedException ignored) {

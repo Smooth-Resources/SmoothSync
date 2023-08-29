@@ -57,7 +57,7 @@ public class InvSeeCommand extends Command {
 
                 player.sendMessage(messages.getComponent("command.invsee.success", placeholders));
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    InvSeeMenu invSeeMenu = new InvSeeMenu(player, user);
+                    InvSeeMenu invSeeMenu = new InvSeeMenu(player, user, placeholders);
                     invSeeMenu.open();
                 });
             } catch (InterruptedException ignored) {

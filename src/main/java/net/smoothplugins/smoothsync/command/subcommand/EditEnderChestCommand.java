@@ -55,7 +55,7 @@ public class EditEnderChestCommand implements Subcommand {
 
                 player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.success", placeholders));
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    EditEnderChestMenu editEnderChestMenu = new EditEnderChestMenu(player, user);
+                    EditEnderChestMenu editEnderChestMenu = new EditEnderChestMenu(player, user, placeholders);
                     editEnderChestMenu.open();
                 });
             } catch (InterruptedException ignored) {

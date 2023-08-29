@@ -27,18 +27,16 @@ public class EditEnderChestMenu extends Menu {
     private final UserService userService;
     private final HashMap<String, String> placeholders;
 
-    public EditEnderChestMenu(Player player, User user) {
+    public EditEnderChestMenu(Player player, User user, HashMap<String, String> placeholders) {
         super(player);
         this.config = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("config")));
         this.messages = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("messages")));
         this.user = user;
-        this.placeholders = new HashMap<>();
+        this.placeholders = placeholders;
         this.userService = SmoothSync.getInjector().getInstance(UserService.class);
     }
 
     public void open() {
-        placeholders.put("%player%", super.getPlayer().getName());
-
         Component title = config.getComponent("smoothsync.edit-enderchest.menu.title", placeholders);
         int size = user.getEnderChestItems().length;
         MenuType type = MenuType.CHEST;

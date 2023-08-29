@@ -54,7 +54,7 @@ public class EditInventoryCommand implements Subcommand {
 
                 player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.success", placeholders));
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    EditInventoryMenu editInventoryMenu = new EditInventoryMenu(player, user);
+                    EditInventoryMenu editInventoryMenu = new EditInventoryMenu(player, user, placeholders);
                     editInventoryMenu.open();
                 });
             } catch (InterruptedException ignored) {

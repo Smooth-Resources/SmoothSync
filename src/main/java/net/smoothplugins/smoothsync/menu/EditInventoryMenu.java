@@ -27,18 +27,16 @@ public class EditInventoryMenu extends Menu {
     private final HashMap<String, String> placeholders;
     private final UserService userService;
 
-    public EditInventoryMenu(Player player, User user) {
+    public EditInventoryMenu(Player player, User user, HashMap<String, String> placeholders) {
         super(player);
         this.config = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("config")));
         this.messages = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("messages")));
         this.user = user;
-        this.placeholders = new HashMap<>();
+        this.placeholders = placeholders;
         this.userService = SmoothSync.getInjector().getInstance(UserService.class);
     }
 
     public void open() {
-        placeholders.put("%player%", super.getPlayer().getName());
-
         Component title = config.getComponent("smoothsync.edit-inventory.menu.title", placeholders);
         int size = 45;
         MenuType type = MenuType.CHEST;
@@ -84,6 +82,7 @@ public class EditInventoryMenu extends Menu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        // TODO: Run async
         userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
         super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-inventory.updated", placeholders));
     }

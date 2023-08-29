@@ -22,16 +22,14 @@ public class InvSeeMenu extends Menu {
     private final User user;
     private final HashMap<String, String> placeholders;
 
-    public InvSeeMenu(Player player, User user) {
+    public InvSeeMenu(Player player, User user, HashMap<String, String> placeholders) {
         super(player);
         this.config = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("config")));
         this.user = user;
-        this.placeholders = new HashMap<>();
+        this.placeholders = placeholders;
     }
 
     public void open() {
-        placeholders.put("%player%", super.getPlayer().getName());
-
         Component title = config.getComponent("invsee.menu.title", placeholders);
         int size = 45;
         MenuType type = MenuType.CHEST;
