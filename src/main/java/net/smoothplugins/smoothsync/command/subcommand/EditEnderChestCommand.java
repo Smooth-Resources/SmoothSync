@@ -47,7 +47,7 @@ public class EditEnderChestCommand implements Subcommand {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.loading", placeholders));
-                User user = userService.requestUpdatedUserByUsername(args[0]).orElse(null);
+                User user = userService.requestUpdatedUserByUsername(args[1]).orElse(null);
                 if (user == null) {
                     player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.user-not-found"));
                     return;
