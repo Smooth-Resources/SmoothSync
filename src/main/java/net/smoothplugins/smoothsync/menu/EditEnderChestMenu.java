@@ -64,7 +64,7 @@ public class EditEnderChestMenu extends Menu {
         return new Clickable() {
             @Override
             public void onClick(PlayerClickMenuItemEvent playerClickMenuItemEvent) {
-                playerClickMenuItemEvent.setCancelled(true);
+                playerClickMenuItemEvent.setCancelled(false);
             }
         };
     }
