@@ -2,12 +2,12 @@ package net.smoothplugins.smoothsync.messenger.message;
 
 import net.smoothplugins.smoothsyncapi.user.User;
 
-public class SendUpdatedUserMessage extends DefaultMessage {
+public class SendRequestedUpdatedUserMessage extends DefaultMessage {
 
     private final User user;
 
-    public SendUpdatedUserMessage(User user) {
-        super(DefaultMessageType.SEND_UPDATED_USER);
+    public SendRequestedUpdatedUserMessage(User user) {
+        super(DefaultMessageType.REQUESTED_UPDATED_USER);
         this.user = user;
     }
 
