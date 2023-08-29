@@ -7,7 +7,7 @@ public class UpdatedUserMessage extends DefaultMessage {
     private final User user;
 
     public UpdatedUserMessage(User user) {
-        super(DefaultMessageType.REQUEST_UPDATED_USER);
+        super(DefaultMessageType.UPDATED_USER);
         this.user = user;
     }
 
