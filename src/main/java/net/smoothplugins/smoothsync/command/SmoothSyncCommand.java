@@ -63,6 +63,12 @@ public class SmoothSyncCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!sender.hasPermission("smoothsync.command.smoothsync")) return null;
+
+        if (args.length == 1) {
+            return List.of("reload", "edit-inventory", "edit-enderchest");
+        }
+
         return null;
     }
 }
