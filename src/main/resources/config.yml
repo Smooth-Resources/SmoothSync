@@ -54,3 +54,6 @@ smoothsync:
   edit-inventory:
     menu:
       title: "&8Edit %player%'s inventory"
+  edit-enderchest:
+    menu:
+      title: "&8Edit %player%'s enderchest"

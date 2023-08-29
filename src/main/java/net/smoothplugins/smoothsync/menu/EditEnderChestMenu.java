@@ -19,15 +19,15 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EditInventoryMenu extends Menu {
+public class EditEnderChestMenu extends Menu {
 
     private final Configuration config;
     private final Configuration messages;
     private final User user;
-    private final HashMap<String, String> placeholders;
     private final UserService userService;
+    private final HashMap<String, String> placeholders;
 
-    public EditInventoryMenu(Player player, User user) {
+    public EditEnderChestMenu(Player player, User user) {
         super(player);
         this.config = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("config")));
         this.messages = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("messages")));
@@ -39,27 +39,13 @@ public class EditInventoryMenu extends Menu {
     public void open() {
         placeholders.put("%player%", super.getPlayer().getName());
 
-        Component title = config.getComponent("smoothsync.edit-inventory.menu.title", placeholders);
-        int size = 45;
+        Component title = config.getComponent("smoothsync.edit-enderchest.menu.title", placeholders);
+        int size = user.getEnderChestItems().length;
         MenuType type = MenuType.CHEST;
         super.createInventory(type, size, title, new ArrayList<>());
 
-        for (int i = 0; i < user.getInventoryStorageContents().length; i++) {
-            MenuItem menuItem = new MenuItem(user.getInventoryStorageContents()[i], i);
-            Clickable clickable = getClickable(ActionType.NONE);
-            menuItem.setClickable(clickable);
-            super.addItem(menuItem);
-        }
-
-        for (int i = 0; i < user.getInventoryArmorContents().length; i++) {
-            MenuItem menuItem = new MenuItem(user.getInventoryArmorContents()[i], i + 36);
-            Clickable clickable = getClickable(ActionType.NONE);
-            menuItem.setClickable(clickable);
-            super.addItem(menuItem);
-        }
-
-        for (int i = 0; i < user.getInventoryExtraContents().length; i++) {
-            MenuItem menuItem = new MenuItem(user.getInventoryExtraContents()[i], i + 44);
+        for (int i = 0; i < user.getEnderChestItems().length; i++) {
+            MenuItem menuItem = new MenuItem(user.getEnderChestItems()[i], i);
             Clickable clickable = getClickable(ActionType.NONE);
             menuItem.setClickable(clickable);
             super.addItem(menuItem);
@@ -77,7 +63,7 @@ public class EditInventoryMenu extends Menu {
         return new Clickable() {
             @Override
             public void onClick(PlayerClickMenuItemEvent playerClickMenuItemEvent) {
-                playerClickMenuItemEvent.setCancelled(false);
+                playerClickMenuItemEvent.setCancelled(true);
             }
         };
     }
@@ -85,6 +71,6 @@ public class EditInventoryMenu extends Menu {
     @Override
     public void onClose(InventoryCloseEvent event) {
         userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
-        super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-inventory.updated", placeholders));
+        super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.updated", placeholders));
     }
 }

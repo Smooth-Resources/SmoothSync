@@ -39,6 +39,13 @@ command:
       success: "&a&lSYNC &8» &fOpening the inventory of &a%player%&f..."
       updated: "&a&lSYNC &8» &fThe inventory of &a%player% &fhas been updated."
     edit-enderchest:
+      not-a-player: "&cYou must be a player to execute this command."
+      no-permission: "&cYou don't have permission to execute this command."
+      usage: "&cUsage: /smoothsync edit-enderchest <player>"
+      loading: "&a&lSYNC &8» &fGetting the enderchest of &a%player%&f..."
+      user-not-found: "&cThe player &f%player% &cwas not found."
+      success: "&a&lSYNC &8» &fOpening the enderchest of &a%player%&f..."
+      updated: "&a&lSYNC &8» &fThe enderchest of &a%player% &fhas been updated."
   invsee:
     not-a-player: "&cYou must be a player to execute this command."
     no-permission: "&cYou don't have permission to execute this command."
