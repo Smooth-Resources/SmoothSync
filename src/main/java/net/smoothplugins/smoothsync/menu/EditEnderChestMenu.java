@@ -13,6 +13,7 @@ import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
@@ -26,6 +27,7 @@ public class EditEnderChestMenu extends Menu {
     private final User user;
     private final UserService userService;
     private final HashMap<String, String> placeholders;
+    private final SmoothSync plugin;
 
     public EditEnderChestMenu(Player player, User user, HashMap<String, String> placeholders) {
         super(player);
@@ -34,6 +36,7 @@ public class EditEnderChestMenu extends Menu {
         this.user = user;
         this.placeholders = placeholders;
         this.userService = SmoothSync.getInjector().getInstance(UserService.class);
+        this.plugin = SmoothSync.getInjector().getInstance(SmoothSync.class);
     }
 
     public void open() {
@@ -68,7 +71,9 @@ public class EditEnderChestMenu extends Menu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
-        super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.updated", placeholders));
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
+            super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.updated", placeholders));
+        });
     }
 }
