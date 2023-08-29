@@ -5,7 +5,7 @@ import com.google.inject.name.Named;
 import net.smoothplugins.smoothbase.configuration.Configuration;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.command.Subcommand;
-import net.smoothplugins.smoothsync.menu.EditInventoryMenu;
+import net.smoothplugins.smoothsync.menu.EditEnderChestMenu;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
 import org.bukkit.Bukkit;
@@ -14,9 +14,10 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
-public class EditInventoryCommand implements Subcommand {
+public class EditEnderChestCommand implements Subcommand {
 
-    @Inject @Named("messages")
+    @Inject
+    @Named("messages")
     private Configuration messages;
     @Inject
     private UserService userService;
@@ -26,17 +27,17 @@ public class EditInventoryCommand implements Subcommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.not-a-player"));
+            sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.not-a-player"));
             return;
         }
 
-        if (!sender.hasPermission("smoothsync.command.smoothsync.edit-inventory")) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.no-permission"));
+        if (!sender.hasPermission("smoothsync.command.smoothsync.edit-enderchest")) {
+            sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.no-permission"));
             return;
         }
 
         if (args.length != 1) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.usage"));
+            sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.usage"));
             return;
         }
 
@@ -45,17 +46,17 @@ public class EditInventoryCommand implements Subcommand {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.loading", placeholders));
+                player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.loading", placeholders));
                 User user = userService.requestUpdatedUserByUsername(args[0]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.user-not-found"));
+                    player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.user-not-found"));
                     return;
                 }
 
-                player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.success", placeholders));
+                player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.success", placeholders));
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    EditInventoryMenu editInventoryMenu = new EditInventoryMenu(player, user);
-                    editInventoryMenu.open();
+                    EditEnderChestMenu editEnderChestMenu = new EditEnderChestMenu(player, user);
+                    editEnderChestMenu.open();
                 });
             } catch (InterruptedException ignored) {
             }
