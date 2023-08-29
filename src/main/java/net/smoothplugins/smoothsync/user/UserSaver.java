@@ -79,6 +79,8 @@ public class UserSaver {
     }
 
     public void addPlayer(Player player) {
+        if (players.contains(player)) return;
+
         players.add(player);
     }
 
