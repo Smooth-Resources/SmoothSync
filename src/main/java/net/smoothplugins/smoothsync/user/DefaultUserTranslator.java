@@ -120,6 +120,8 @@ public class DefaultUserTranslator implements UserTranslator {
             if (user.getInventoryExtraContents() != null) {
                 player.getInventory().setExtraContents(user.getInventoryExtraContents());
             }
+
+            player.getInventory().setHeldItemSlot(user.getHeldItemSlot());
         }
 
         if (section.getBoolean("ender-chest") && user.getEnderChestItems() != null) {
