@@ -139,6 +139,7 @@ public class DefaultUserTranslator implements UserTranslator {
         }
 
         if (section.getBoolean("potion-effects") && user.getPotionEffects() != null) {
+            player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
             player.addPotionEffects(user.getPotionEffects());
         }
 
