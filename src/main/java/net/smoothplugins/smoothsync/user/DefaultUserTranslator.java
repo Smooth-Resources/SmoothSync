@@ -144,8 +144,13 @@ public class DefaultUserTranslator implements UserTranslator {
         }
 
         if (section.getBoolean("health")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(user.getMaxHealth());
-            player.setHealth(user.getHealth());
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+
+            if (user.getHealth() > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+                player.setHealth(20);
+            } else {
+                player.setHealth(user.getHealth());
+            }
         }
 
         if (section.getBoolean("food")) {
