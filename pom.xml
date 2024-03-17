@@ -40,7 +40,15 @@
                         <configuration>
                             <relocations>
                                 <relocation>
-                                    <pattern>net.smoothplugins</pattern>
+                                    <pattern>net.smoothplugins.smoothsyncapi</pattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.net.smoothplugins</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.smoothplugins.smoothbase</pattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.net.smoothplugins</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.smoothplugins.smoothusersapi</pattern>
                                     <shadedPattern>net.smoothplugins.smoothusers.libs.net.smoothplugins</shadedPattern>
                                 </relocation>
                                 <relocation>
