@@ -41,15 +41,19 @@
                             <relocations>
                                 <relocation>
                                     <pattern>net.smoothplugins.smoothbase</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.net.smoothplugins</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothsync.libs.net.smoothplugins</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.google.inject</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.com.google.inject</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothsync.libs.com.google.inject</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mongodb</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.org.mongodb</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothsync.libs.org.mongodb</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mongodb</pattern>
+                                    <shadedPattern>net.smoothplugins.smoothsync.libs.com.mongodb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bson</pattern>
@@ -57,11 +61,11 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>redis.clients</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.redis.clients</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothsync.libs.redis.clients</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>es.virtualhit</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.es.virtualhit</shadedPattern>
+                                    <pattern>es.virtualhit.virtualmenu</pattern>
+                                    <shadedPattern>net.smoothplugins.smoothsync.libs.es.virtualhit.virtualmenu</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
