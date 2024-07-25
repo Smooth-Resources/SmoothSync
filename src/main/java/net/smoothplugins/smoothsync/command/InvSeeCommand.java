@@ -51,7 +51,7 @@ public class InvSeeCommand extends Command {
                 player.sendMessage(messages.getComponent("command.invsee.loading", placeholders));
                 User user = userService.requestUpdatedUserByUsername(args[0]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.invsee.user-not-found"));
+                    player.sendMessage(messages.getComponent("command.invsee.user-not-found", placeholders));
                     return;
                 }
 

@@ -48,7 +48,7 @@ public class EditInventoryCommand implements Subcommand {
                 player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.loading", placeholders));
                 User user = userService.requestUpdatedUserByUsername(args[1]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.user-not-found"));
+                    player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.user-not-found", placeholders));
                     return;
                 }
 

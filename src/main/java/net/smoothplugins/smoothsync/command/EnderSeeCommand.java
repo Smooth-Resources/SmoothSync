@@ -51,7 +51,7 @@ public class EnderSeeCommand extends Command {
                 player.sendMessage(messages.getComponent("command.endersee.loading", placeholders));
                 User user = userService.requestUpdatedUserByUsername(args[0]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.endersee.user-not-found"));
+                    player.sendMessage(messages.getComponent("command.endersee.user-not-found", placeholders));
                     return;
                 }
 
