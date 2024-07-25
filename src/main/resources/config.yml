@@ -24,6 +24,7 @@ synchronization:
     location: false
     advancements: true
     statistics: true
+    fly: true
 
 data-update:
   # When Performance Mode is enabled (performance-mode: true):

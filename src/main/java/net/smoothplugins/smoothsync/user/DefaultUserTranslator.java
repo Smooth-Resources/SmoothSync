@@ -98,6 +98,8 @@ public class DefaultUserTranslator implements UserTranslator {
         user.setGlobalStatistics(globalStatistics);
         user.setBlockStatistics(blockStatistics);
         user.setEntityStatistics(entityStatistics);
+        user.setAllowFlight(player.getAllowFlight());
+        user.setFlying(player.isFlying());
     }
 
     @Override
@@ -200,6 +202,15 @@ public class DefaultUserTranslator implements UserTranslator {
                     player.setStatistic(statistic, entityType, user.getEntityStatistics().get(statistic).get(entityType));
                 });
             });
+        }
+
+        if (section.getBoolean("fly")) {
+            player.setAllowFlight(user.isAllowFlight());
+            if (user.isAllowFlight()) {
+                player.setFlying(user.isFlying());
+            } else {
+                player.setFlying(false);
+            }
         }
     }
 }
