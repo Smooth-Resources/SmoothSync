@@ -39,7 +39,7 @@ public class PlayerQuitListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if (!userSaver.containsPlayer(player)) return;
+        if (!userSaver.containsPlayer(player)) return; // Player data has not been loaded yet, so we don't need to save it.
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
@@ -55,6 +55,8 @@ public class PlayerQuitListener implements Listener {
             userService.update(user, destinations.toArray(new Destination[0]));
             userService.setTTLOfCacheByUUID(user.getUuid(), 600); // 10 minutes
 
+            // The player could have changed to another server, so we need to send a message to notify that the user data has been updated.
+            // If the player has changed to another server, when the server receives the message, it will request the data and the data will be applied to the user.
             QuitNotificationMessage message = new QuitNotificationMessage(user.getUuid());
             messenger.send(serializer.serialize(message));
         });

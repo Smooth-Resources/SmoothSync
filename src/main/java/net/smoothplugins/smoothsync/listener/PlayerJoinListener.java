@@ -46,6 +46,7 @@ public class PlayerJoinListener implements Listener {
         Bukkit.getPluginManager().callEvent(dataCleanEvent);
 
         if (!dataCleanEvent.isCancelled()) {
+            // We clear sensible data to prevent exploits.
             player.getInventory().clear();
             player.getEnderChest().clear();
             player.setExp(0);
@@ -53,11 +54,15 @@ public class PlayerJoinListener implements Listener {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            // If the user is not in the cache or has TTL, means that the user doesn't come from another server with SmoothSync.
+            // So, the currently stored data is valid, so we don't need to wait for an QuitNotificationMessage to apply the data.
             if (!userService.cacheContainsByUUID(player.getUniqueId()) || userService.hasTTLOfCacheByUUID(player.getUniqueId())) {
                 User user = userService.getUserByUUID(player.getUniqueId()).orElseGet(() -> {
+                    // This is a new player, so we need to create a new user.
                     User newUser = new User(player.getUniqueId());
                     userTranslator.translateToUser(newUser, player);
 
+                    // We restore the data that we cleared before (maybe SmoothSync has been installed on a not new server).
                     newUser.setInventoryStorageContents(storageContentsBackup);
                     newUser.setInventoryArmorContents(armorContentsBackup);
                     newUser.setInventoryExtraContents(extraContentsBackup);
@@ -77,9 +82,14 @@ public class PlayerJoinListener implements Listener {
                 return;
             }
 
+            // The player is in the cache and doesn't have TTL, so we need to wait for the data to be updated.
+            // This is because PlayerQuitListener is executed after PlayerJoinListener.
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+                // If everything works fine, the message should have been received and the player should be in userSaver.
                 if (!player.isOnline() || userSaver.containsPlayer(player)) return;
 
+                // If the message has not been received, we need to load the data from the storage.
+                // This should not happen, but it is a security measure (maybe the server has crashed).
                 User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
                 if (user == null) return;
 
@@ -88,7 +98,7 @@ public class PlayerJoinListener implements Listener {
                 }
 
                 applyData(user, player);
-            }, (int) ((config.getInt("synchronization.timeouts.join") / 1000F) * 20L));
+            }, (int) ((config.getInt("synchronization.timeouts.join") / 1000F) * 20L)); // By default, 2 seconds.
         });
     }
 
