@@ -1,6 +1,6 @@
 name: SmoothSync
 version: '${project.version}'
-main: net.smoothplugins.smoothsync.SmoothSync
+main: com.smoothresources.smoothsync.SmoothSync
 api-version: 1.16
 depend:
   - SmoothUsers

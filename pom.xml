@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.smoothplugins</groupId>
+    <groupId>com.smoothresources</groupId>
     <artifactId>SmoothSync</artifactId>
     <version>v1.0.2</version>
     <packaging>jar</packaging>
@@ -40,32 +40,32 @@
                         <configuration>
                             <relocations>
                                 <relocation>
-                                    <pattern>net.smoothplugins.smoothbase</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.net.smoothplugins</shadedPattern>
+                                    <pattern>com.smoothresources.smoothbase</pattern>
+                                    <shadedPattern>com.smoothresources.smoothusers.libs.com.smoothresources</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.google.inject</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.com.google.inject</shadedPattern>
+                                    <shadedPattern>com.smoothresources.smoothusers.libs.com.google.inject</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mongodb</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.org.mongodb</shadedPattern>
+                                    <shadedPattern>com.smoothresources.smoothusers.libs.org.mongodb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bson</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.org.bson</shadedPattern>
+                                    <shadedPattern>com.smoothresources.smoothsync.libs.org.bson</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>redis.clients</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.redis.clients</shadedPattern>
+                                    <shadedPattern>com.smoothresources.smoothusers.libs.redis.clients</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>es.virtualhit</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.es.virtualhit</shadedPattern>
+                                    <shadedPattern>com.smoothresources.smoothusers.libs.es.virtualhit</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothusers.libs.com.google.gson</shadedPattern>
+                                    <shadedPattern>com.smoothresources.smoothusers.libs.com.google.gson</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -109,17 +109,17 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.smoothplugins</groupId>
+            <groupId>com.smoothresources</groupId>
             <artifactId>smoothbase-paper</artifactId>
-            <version>v2.0.0</version>
+            <version>v2.6.0</version>
         </dependency>
         <dependency>
-            <groupId>net.smoothplugins</groupId>
+            <groupId>com.smoothresources</groupId>
             <artifactId>SmoothSyncAPI</artifactId>
             <version>v1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.smoothplugins</groupId>
+            <groupId>com.smoothresources</groupId>
             <artifactId>SmoothUsersAPI</artifactId>
             <version>v1.0.0</version>
             <scope>provided</scope>
