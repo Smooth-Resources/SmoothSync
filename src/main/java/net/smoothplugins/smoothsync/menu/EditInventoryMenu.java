@@ -2,13 +2,11 @@ package net.smoothplugins.smoothsync.menu;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import es.virtualhit.virtualmenu.event.PlayerClickMenuItemEvent;
-import es.virtualhit.virtualmenu.menu.Menu;
-import es.virtualhit.virtualmenu.menu.item.Clickable;
-import es.virtualhit.virtualmenu.menu.item.MenuItem;
-import es.virtualhit.virtualmenu.menu.type.MenuType;
 import net.kyori.adventure.text.Component;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
+import net.smoothplugins.smoothbase.paper.menu.Menu;
+import net.smoothplugins.smoothbase.paper.menu.button.ClickableButton;
+import net.smoothplugins.smoothbase.paper.menu.event.PlayerClickButtonEvent;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -18,14 +16,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EditInventoryMenu extends Menu {
 
-    private final Configuration config;
-    private final Configuration messages;
+    private final YAMLFile config;
+    private final YAMLFile messages;
     private final User user;
     private final HashMap<String, String> placeholders;
     private final UserService userService;
@@ -33,56 +31,53 @@ public class EditInventoryMenu extends Menu {
 
     public EditInventoryMenu(Player player, User user, HashMap<String, String> placeholders) {
         super(player);
-        this.config = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("config")));
-        this.messages = SmoothSync.getInjector().getInstance(Key.get(Configuration.class, Names.named("messages")));
+        this.config = SmoothSync.getInjector().getInstance(Key.get(YAMLFile.class, Names.named("config")));
+        this.messages = SmoothSync.getInjector().getInstance(Key.get(YAMLFile.class, Names.named("messages")));
         this.user = user;
         this.placeholders = placeholders;
         this.userService = SmoothSync.getInjector().getInstance(UserService.class);
         this.plugin = SmoothSync.getInjector().getInstance(SmoothSync.class);
     }
 
-    public void open() {
-        Component title = config.getComponent("smoothsync.edit-inventory.menu.title", placeholders);
+    @Override
+    public void createInventory() {
+        Component title = config.getComponent(placeholders, "smoothsync", "edit-inventory", "menu", "title");
         int size = 45;
-        MenuType type = MenuType.CHEST;
-        super.createInventory(type, size, title, new ArrayList<>());
+        Inventory inventory = Bukkit.createInventory(null, size, title);
+        setInventory(inventory);
+    }
 
+    @Override
+    public void setItems() {
         for (int i = 0; i < user.getInventoryStorageContents().length; i++) {
-            MenuItem menuItem = new MenuItem(user.getInventoryStorageContents()[i], i);
-            Clickable clickable = getClickable(ActionType.NONE);
-            menuItem.setClickable(clickable);
-            super.addItem(menuItem);
+            ClickableButton button = new ClickableButton(user.getInventoryStorageContents()[i], i) {
+                @Override
+                public void onClick(@NotNull PlayerClickButtonEvent event) {
+                    event.getOriginalBukkitEvent().setCancelled(false);
+                }
+            };
+            setItem(button);
         }
 
         for (int i = 0; i < user.getInventoryArmorContents().length; i++) {
-            MenuItem menuItem = new MenuItem(user.getInventoryArmorContents()[i], i + 36);
-            Clickable clickable = getClickable(ActionType.NONE);
-            menuItem.setClickable(clickable);
-            super.addItem(menuItem);
+            ClickableButton button = new ClickableButton(user.getInventoryArmorContents()[i], i + 36) {
+                @Override
+                public void onClick(@NotNull PlayerClickButtonEvent event) {
+                    event.getOriginalBukkitEvent().setCancelled(false);
+                }
+            };
+            setItem(button);
         }
 
         for (int i = 0; i < user.getInventoryExtraContents().length; i++) {
-            MenuItem menuItem = new MenuItem(user.getInventoryExtraContents()[i], i + 44);
-            Clickable clickable = getClickable(ActionType.NONE);
-            menuItem.setClickable(clickable);
-            super.addItem(menuItem);
+            ClickableButton button = new ClickableButton(user.getInventoryExtraContents()[i], i + 44) {
+                @Override
+                public void onClick(@NotNull PlayerClickButtonEvent event) {
+                    event.getOriginalBukkitEvent().setCancelled(false);
+                }
+            };
+            setItem(button);
         }
-
-        super.updateItems();
-        super.open();
-    }
-
-    private enum ActionType {
-        NONE
-    }
-
-    private Clickable getClickable(ActionType type) {
-        return new Clickable() {
-            @Override
-            public void onClick(PlayerClickMenuItemEvent playerClickMenuItemEvent) {
-                playerClickMenuItemEvent.setCancelled(false);
-            }
-        };
     }
 
     private ItemStack[] getStorageContents() {
@@ -123,7 +118,7 @@ public class EditInventoryMenu extends Menu {
             user.setInventoryExtraContents(getExtraContents());
 
             userService.update(user, Destination.CACHE_IF_PRESENT, Destination.STORAGE, Destination.PLAYER_IF_ONLINE);
-            super.getPlayer().sendMessage(messages.getComponent("command.smoothsync.edit-inventory.updated", placeholders));
+            super.getPlayer().sendMessage(messages.getComponent(placeholders, "command", "smoothsync", "edit-inventory", "updated"));
         });
     }
 }

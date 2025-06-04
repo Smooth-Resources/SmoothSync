@@ -2,7 +2,7 @@ package net.smoothplugins.smoothsync.user;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserTranslator;
@@ -12,7 +12,6 @@ import org.bukkit.Statistic;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -22,7 +21,7 @@ import java.util.HashMap;
 public class DefaultUserTranslator implements UserTranslator {
 
     @Inject @Named("config")
-    private Configuration config;
+    private YAMLFile config;
     @Inject
     private SmoothSync plugin;
 
@@ -98,19 +97,11 @@ public class DefaultUserTranslator implements UserTranslator {
         user.setGlobalStatistics(globalStatistics);
         user.setBlockStatistics(blockStatistics);
         user.setEntityStatistics(entityStatistics);
-        user.setAllowFlight(player.getAllowFlight());
-        user.setFlying(player.isFlying());
     }
 
     @Override
     public void translateToPlayer(User user, Player player) {
-        ConfigurationSection section = config.getConfigurationSection("synchronization.features");
-        if (section == null) {
-            plugin.getLogger().severe("Could not find section 'synchronization.features' in config.yml");
-            return;
-        }
-
-        if (section.getBoolean("inventory")) {
+        if (config.getBoolean("synchronization", "features", "inventory")) {
             if (user.getInventoryStorageContents() != null) {
                 player.getInventory().setStorageContents(user.getInventoryStorageContents());
             }
@@ -126,7 +117,7 @@ public class DefaultUserTranslator implements UserTranslator {
             player.getInventory().setHeldItemSlot(user.getHeldItemSlot());
         }
 
-        if (section.getBoolean("ender-chest") && user.getEnderChestItems() != null) {
+        if (config.getBoolean("synchronization", "features", "ender-chest") && user.getEnderChestItems() != null) {
             try {
                 player.getEnderChest().setContents(user.getEnderChestItems());
             } catch (IllegalArgumentException ignored) {
@@ -136,16 +127,16 @@ public class DefaultUserTranslator implements UserTranslator {
             }
         }
 
-        if (section.getBoolean("game-mode") && user.getGameMode() != null) {
+        if (config.getBoolean("synchronization", "features", "game-mode") && user.getGameMode() != null) {
             player.setGameMode(user.getGameMode());
         }
 
-        if (section.getBoolean("potion-effects") && user.getPotionEffects() != null) {
+        if (config.getBoolean("synchronization", "features", "potion-effects") && user.getPotionEffects() != null) {
             player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
             player.addPotionEffects(user.getPotionEffects());
         }
 
-        if (section.getBoolean("health")) {
+        if (config.getBoolean("synchronization", "features", "health")) {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 
             if (user.getHealth() > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
@@ -155,22 +146,22 @@ public class DefaultUserTranslator implements UserTranslator {
             }
         }
 
-        if (section.getBoolean("food")) {
+        if (config.getBoolean("synchronization", "features", "food")) {
             player.setFoodLevel(user.getFoodLevel());
             player.setSaturation(user.getSaturation());
             player.setExhaustion(user.getExhaustion());
         }
 
-        if (section.getBoolean("air")) {
+        if (config.getBoolean("synchronization", "features", "air")) {
             player.setMaximumAir(user.getMaximumAir());
             player.setRemainingAir(user.getRemainingAir());
         }
 
-        if (section.getBoolean("location") && user.getLocation() != null) {
+        if (config.getBoolean("synchronization", "features", "location") && user.getLocation() != null) {
             player.teleport(user.getLocation());
         }
 
-        if (section.getBoolean("advancements") && user.getAdvancements() != null) {
+        if (config.getBoolean("synchronization", "features", "advancements") && user.getAdvancements() != null) {
             user.getAdvancements().keySet().forEach(advancement -> {
                 try {
                     AdvancementProgress progress = player.getAdvancementProgress(advancement);
@@ -181,12 +172,12 @@ public class DefaultUserTranslator implements UserTranslator {
             });
         }
 
-        if (section.getBoolean("experience")) {
+        if (config.getBoolean("synchronization", "features", "experience")) {
             player.setExp(user.getExp());
             player.setLevel(user.getLevel());
         }
 
-        if (section.getBoolean("statistics") && user.getGlobalStatistics() != null && user.getBlockStatistics() != null && user.getEntityStatistics() != null) {
+        if (config.getBoolean("synchronization", "features", "statistics") && user.getGlobalStatistics() != null && user.getBlockStatistics() != null && user.getEntityStatistics() != null) {
             user.getGlobalStatistics().keySet().forEach(statistic -> {
                 player.setStatistic(statistic, user.getGlobalStatistics().get(statistic));
             });
@@ -202,15 +193,6 @@ public class DefaultUserTranslator implements UserTranslator {
                     player.setStatistic(statistic, entityType, user.getEntityStatistics().get(statistic).get(entityType));
                 });
             });
-        }
-
-        if (section.getBoolean("fly")) {
-            player.setAllowFlight(user.isAllowFlight());
-            if (user.isAllowFlight()) {
-                player.setFlying(user.isFlying());
-            } else {
-                player.setFlying(false);
-            }
         }
     }
 }

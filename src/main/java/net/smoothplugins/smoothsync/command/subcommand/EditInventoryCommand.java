@@ -2,7 +2,7 @@ package net.smoothplugins.smoothsync.command.subcommand;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.command.Subcommand;
 import net.smoothplugins.smoothsync.menu.EditInventoryMenu;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class EditInventoryCommand implements Subcommand {
 
     @Inject @Named("messages")
-    private Configuration messages;
+    private YAMLFile messages;
     @Inject
     private UserService userService;
     @Inject
@@ -26,17 +26,17 @@ public class EditInventoryCommand implements Subcommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.not-a-player"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "edit-inventory", "not-a-player"));
             return;
         }
 
         if (!sender.hasPermission("smoothsync.command.smoothsync.edit-inventory")) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.no-permission"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "edit-inventory", "no-permission"));
             return;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.usage"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "edit-inventory", "usage"));
             return;
         }
 
@@ -45,14 +45,14 @@ public class EditInventoryCommand implements Subcommand {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.loading", placeholders));
+                player.sendMessage(messages.getComponent(placeholders, "command", "smoothsync", "edit-inventory", "loading"));
                 User user = userService.requestUpdatedUserByUsername(args[1]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.user-not-found", placeholders));
+                    player.sendMessage(messages.getComponent("command", "smoothsync", "edit-inventory", "user-not-found"));
                     return;
                 }
 
-                player.sendMessage(messages.getComponent("command.smoothsync.edit-inventory.success", placeholders));
+                player.sendMessage(messages.getComponent(placeholders, "command", "smoothsync", "edit-inventory", "success"));
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     EditInventoryMenu editInventoryMenu = new EditInventoryMenu(player, user, placeholders);
                     editInventoryMenu.open();

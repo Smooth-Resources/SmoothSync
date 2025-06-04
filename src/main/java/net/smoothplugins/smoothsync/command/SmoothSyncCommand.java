@@ -2,7 +2,7 @@ package net.smoothplugins.smoothsync.command;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.command.subcommand.EditEnderChestCommand;
 import net.smoothplugins.smoothsync.command.subcommand.EditInventoryCommand;
 import net.smoothplugins.smoothsync.command.subcommand.ReloadCommand;
@@ -19,7 +19,7 @@ import java.util.Locale;
 public class SmoothSyncCommand implements CommandExecutor, TabCompleter {
 
     @Inject @Named("messages")
-    private Configuration messages;
+    private YAMLFile messages;
     @Inject
     private ReloadCommand reloadCommand;
     @Inject
@@ -30,12 +30,12 @@ public class SmoothSyncCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("smoothsync.command.smoothsync")) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.no-permission"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "no-permission"));
             return true;
         }
 
         if (args.length == 0) {
-            messages.getComponentList("command.smoothsync.help").forEach(sender::sendMessage);
+            messages.getComponentList("command", "smoothsync", "help").forEach(sender::sendMessage);
             return true;
         }
 
@@ -53,7 +53,7 @@ public class SmoothSyncCommand implements CommandExecutor, TabCompleter {
             }
 
             default -> {
-                messages.getComponentList("command.smoothsync.help").forEach(sender::sendMessage);
+                messages.getComponentList("command", "smoothsync", "help").forEach(sender::sendMessage);
                 return true;
             }
         }

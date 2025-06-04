@@ -1,10 +1,11 @@
 package net.smoothplugins.smoothsync.listener;
 
 import com.google.inject.Inject;
-import net.smoothplugins.smoothbase.messenger.Messenger;
-import net.smoothplugins.smoothbase.serializer.Serializer;
+import net.smoothplugins.smoothbase.common.messenger.Message;
+import net.smoothplugins.smoothbase.common.messenger.Messenger;
+import net.smoothplugins.smoothbase.common.serializer.Serializer;
 import net.smoothplugins.smoothsync.SmoothSync;
-import net.smoothplugins.smoothsync.messenger.message.QuitNotificationMessage;
+import net.smoothplugins.smoothsync.message.user.quit.QuitNotificationMessage;
 import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
@@ -39,7 +40,7 @@ public class PlayerQuitListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if (!userSaver.containsPlayer(player)) return; // Player data has not been loaded yet, so we don't need to save it.
+        if (!userSaver.containsPlayer(player)) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
@@ -55,10 +56,9 @@ public class PlayerQuitListener implements Listener {
             userService.update(user, destinations.toArray(new Destination[0]));
             userService.setTTLOfCacheByUUID(user.getUuid(), 600); // 10 minutes
 
-            // The player could have changed to another server, so we need to send a message to notify that the user data has been updated.
-            // If the player has changed to another server, when the server receives the message, it will request the data and the data will be applied to the user.
             QuitNotificationMessage message = new QuitNotificationMessage(user.getUuid());
-            messenger.send(serializer.serialize(message));
+            Message messengerMessage = new Message(QuitNotificationMessage.class, serializer.serialize(message));
+            messenger.send(messengerMessage);
         });
     }
 }

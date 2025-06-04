@@ -6,7 +6,7 @@
 
     <groupId>net.smoothplugins</groupId>
     <artifactId>SmoothSync</artifactId>
-    <version>v1.2.0</version>
+    <version>v1.0.2</version>
     <packaging>jar</packaging>
 
     <name>SmoothSync</name>
@@ -41,19 +41,15 @@
                             <relocations>
                                 <relocation>
                                     <pattern>net.smoothplugins.smoothbase</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.net.smoothplugins</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.net.smoothplugins</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.google.inject</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.com.google.inject</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.com.google.inject</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mongodb</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.org.mongodb</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.mongodb</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.com.mongodb</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.org.mongodb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bson</pattern>
@@ -61,11 +57,15 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>redis.clients</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.redis.clients</shadedPattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.redis.clients</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>es.virtualhit.virtualmenu</pattern>
-                                    <shadedPattern>net.smoothplugins.smoothsync.libs.es.virtualhit.virtualmenu</shadedPattern>
+                                    <pattern>es.virtualhit</pattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.es.virtualhit</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>net.smoothplugins.smoothusers.libs.com.google.gson</shadedPattern>
                                 </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -109,6 +109,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.smoothplugins</groupId>
+            <artifactId>smoothbase-paper</artifactId>
+            <version>v2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.smoothplugins</groupId>
+            <artifactId>SmoothSyncAPI</artifactId>
+            <version>v1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.smoothplugins</groupId>
+            <artifactId>SmoothUsersAPI</artifactId>
+            <version>v1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>5.1.0</version>
@@ -124,25 +140,14 @@
             <version>5.1.2</version>
         </dependency>
         <dependency>
-            <groupId>net.smoothplugins</groupId>
-            <artifactId>SmoothSyncAPI</artifactId>
-            <version>v1.0.0</version>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>configurate-yaml</artifactId>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
-            <groupId>net.smoothplugins</groupId>
-            <artifactId>SmoothBase</artifactId>
-            <version>v1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.smoothplugins</groupId>
-            <artifactId>SmoothUsersAPI</artifactId>
-            <version>v1.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.virtualhit.virtualmenu</groupId>
-            <artifactId>VirtualMenu</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
         </dependency>
     </dependencies>
 </project>

@@ -2,7 +2,7 @@ package net.smoothplugins.smoothsync.command.subcommand;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.command.Subcommand;
 import net.smoothplugins.smoothsync.menu.EditEnderChestMenu;
@@ -18,7 +18,7 @@ public class EditEnderChestCommand implements Subcommand {
 
     @Inject
     @Named("messages")
-    private Configuration messages;
+    private YAMLFile messages;
     @Inject
     private UserService userService;
     @Inject
@@ -27,17 +27,17 @@ public class EditEnderChestCommand implements Subcommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.not-a-player"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "edit-enderchest", "not-a-player"));
             return;
         }
 
         if (!sender.hasPermission("smoothsync.command.smoothsync.edit-enderchest")) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.no-permission"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "edit-enderchest", "no-permission"));
             return;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.usage"));
+            sender.sendMessage(messages.getComponent("command", "smoothsync", "edit-enderchest", "usage"));
             return;
         }
 
@@ -46,14 +46,14 @@ public class EditEnderChestCommand implements Subcommand {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.loading", placeholders));
+                player.sendMessage(messages.getComponent(placeholders, "command", "smoothsync", "edit-enderchest", "loading"));
                 User user = userService.requestUpdatedUserByUsername(args[1]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.user-not-found", placeholders));
+                    player.sendMessage(messages.getComponent("command", "smoothsync", "edit-enderchest", "user-not-found"));
                     return;
                 }
 
-                player.sendMessage(messages.getComponent("command.smoothsync.edit-enderchest.success", placeholders));
+                player.sendMessage(messages.getComponent(placeholders, "command", "smoothsync", "edit-enderchest", "success"));
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     EditEnderChestMenu editEnderChestMenu = new EditEnderChestMenu(player, user, placeholders);
                     editEnderChestMenu.open();

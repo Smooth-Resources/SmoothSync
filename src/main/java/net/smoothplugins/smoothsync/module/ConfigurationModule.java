@@ -2,21 +2,21 @@ package net.smoothplugins.smoothsync.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 
 public class ConfigurationModule extends AbstractModule {
 
-    private final Configuration config;
-    private final Configuration messages;
+    private final YAMLFile config;
+    private final YAMLFile messages;
 
-    public ConfigurationModule(Configuration config, Configuration messages) {
+    public ConfigurationModule(YAMLFile config, YAMLFile messages) {
         this.config = config;
         this.messages = messages;
     }
 
     @Override
     protected void configure() {
-        bind(Configuration.class).annotatedWith(Names.named("config")).toInstance(config);
-        bind(Configuration.class).annotatedWith(Names.named("messages")).toInstance(messages);
+        bind(YAMLFile.class).annotatedWith(Names.named("config")).toInstance(config);
+        bind(YAMLFile.class).annotatedWith(Names.named("messages")).toInstance(messages);
     }
 }

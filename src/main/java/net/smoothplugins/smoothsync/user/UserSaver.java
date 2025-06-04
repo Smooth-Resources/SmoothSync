@@ -1,10 +1,12 @@
 package net.smoothplugins.smoothsync.user;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
+import net.smoothplugins.smoothsyncapi.event.DataSyncEvent;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
@@ -27,13 +29,13 @@ public class UserSaver {
     @Inject
     private SmoothSync plugin;
     @Inject @Named("config")
-    private Configuration config;
+    private YAMLFile config;
     private BukkitTask task;
 
     private List<Player> players = new ArrayList<>();
 
     public void init() {
-        int seconds = config.getInt("data-update.save-interval");
+        int seconds = config.getInt("data-update", "save-interval");
         int ticks = seconds * 20;
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updatePlayers, ticks, ticks);
     }
@@ -59,7 +61,7 @@ public class UserSaver {
 
             Set<Destination> destinations = new HashSet<>();
             destinations.add(Destination.CACHE);
-            if (!config.getBoolean("data-update.performance-mode")) {
+            if (!config.getBoolean("data-update", "performance-mode")) {
                 destinations.add(Destination.STORAGE);
             }
 
@@ -68,7 +70,7 @@ public class UserSaver {
 
             if (dataUpdateEvent.isCancelled()) return;
 
-            if (config.getBoolean("data-update.performance-mode")) {
+            if (config.getBoolean("data-update", "performance-mode")) {
                 userService.update(user, destinations.toArray(new Destination[0]));
             } else {
                 userService.update(user, destinations.toArray(new Destination[0]));
@@ -86,5 +88,21 @@ public class UserSaver {
 
     public boolean containsPlayer(Player player) {
         return players.contains(player);
+    }
+
+    public static void applyData(User user, Player player) {
+        Injector injector = SmoothSync.getInjector();
+        SmoothSync plugin = injector.getInstance(SmoothSync.class);
+        UserTranslator userTranslator = injector.getInstance(UserTranslator.class);
+        UserSaver userSaver = injector.getInstance(UserSaver.class);
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            DataSyncEvent dataSyncEvent = new DataSyncEvent(player, user);
+            Bukkit.getPluginManager().callEvent(dataSyncEvent);
+            if (!dataSyncEvent.isCancelled()) {
+                userTranslator.translateToPlayer(user, player);
+                userSaver.addPlayer(player);
+            }
+        });
     }
 }

@@ -1,6 +1,6 @@
 package net.smoothplugins.smoothsync.command;
 
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.menu.InvSeeMenu;
 import net.smoothplugins.smoothsyncapi.user.User;
@@ -15,11 +15,11 @@ import java.util.HashMap;
 
 public class InvSeeCommand extends Command {
 
-    private Configuration messages;
+    private YAMLFile messages;
     private UserService userService;
     private SmoothSync plugin;
 
-    public InvSeeCommand(@NotNull String name, Configuration messages, UserService userService, SmoothSync plugin) {
+    public InvSeeCommand(@NotNull String name, YAMLFile messages, UserService userService, SmoothSync plugin) {
         super(name);
         this.messages = messages;
         this.userService = userService;
@@ -29,17 +29,17 @@ public class InvSeeCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(messages.getComponent("command.invsee.not-a-player"));
+            sender.sendMessage(messages.getComponent("command", "invsee", "not-a-player"));
             return true;
         }
 
         if (!player.hasPermission("smoothsync.command.invsee")) {
-            player.sendMessage(messages.getComponent("command.invsee.no-permission"));
+            player.sendMessage(messages.getComponent("command", "invsee", "no-permission"));
             return true;
         }
 
         if (args.length != 1) {
-            sender.sendMessage(messages.getComponent("command.invsee.usage"));
+            sender.sendMessage(messages.getComponent("command", "invsee", "usage"));
             return true;
         }
 
@@ -48,14 +48,14 @@ public class InvSeeCommand extends Command {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                player.sendMessage(messages.getComponent("command.invsee.loading", placeholders));
+                player.sendMessage(messages.getComponent(placeholders, "command", "invsee", "loading"));
                 User user = userService.requestUpdatedUserByUsername(args[0]).orElse(null);
                 if (user == null) {
-                    player.sendMessage(messages.getComponent("command.invsee.user-not-found", placeholders));
+                    player.sendMessage(messages.getComponent("command", "invsee", "user-not-found"));
                     return;
                 }
 
-                player.sendMessage(messages.getComponent("command.invsee.success", placeholders));
+                player.sendMessage(messages.getComponent(placeholders, "command", "invsee", "success"));
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     InvSeeMenu invSeeMenu = new InvSeeMenu(player, user, placeholders);
                     invSeeMenu.open();

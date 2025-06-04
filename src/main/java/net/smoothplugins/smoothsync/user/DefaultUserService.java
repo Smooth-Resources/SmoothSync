@@ -2,19 +2,22 @@ package net.smoothplugins.smoothsync.user;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
-import net.smoothplugins.smoothbase.messenger.Messenger;
-import net.smoothplugins.smoothbase.messenger.Response;
-import net.smoothplugins.smoothbase.serializer.Serializer;
-import net.smoothplugins.smoothbase.storage.MongoStorage;
-import net.smoothplugins.smoothbase.storage.RedisStorage;
-import net.smoothplugins.smoothsync.messenger.message.RequestUpdatedUserMessage;
-import net.smoothplugins.smoothsync.messenger.message.SendRequestedUpdatedUserMessage;
-import net.smoothplugins.smoothsync.messenger.message.UpdatedUserMessage;
+import net.smoothplugins.smoothbase.common.database.nosql.MongoDBDatabase;
+import net.smoothplugins.smoothbase.common.database.nosql.RedisDatabase;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
+import net.smoothplugins.smoothbase.common.messenger.Conversation;
+import net.smoothplugins.smoothbase.common.messenger.ConversationCallback;
+import net.smoothplugins.smoothbase.common.messenger.Message;
+import net.smoothplugins.smoothbase.common.messenger.Messenger;
+import net.smoothplugins.smoothbase.common.serializer.Serializer;
+import net.smoothplugins.smoothsync.message.user.apply.ApplyUserDataMessage;
+import net.smoothplugins.smoothsync.message.user.updated.UpdatedUserRequest;
+import net.smoothplugins.smoothsync.message.user.updated.UpdatedUserResponse;
 import net.smoothplugins.smoothsyncapi.service.Destination;
 import net.smoothplugins.smoothsyncapi.user.User;
 import net.smoothplugins.smoothsyncapi.user.UserService;
 import net.smoothplugins.smoothusersapi.SmoothUsersAPI;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -24,9 +27,9 @@ import java.util.concurrent.CompletableFuture;
 public class DefaultUserService implements UserService {
 
     @Inject @Named("user")
-    private MongoStorage mongoStorage;
+    private MongoDBDatabase mongoStorage;
     @Inject @Named("user")
-    private RedisStorage redisStorage;
+    private RedisDatabase redisStorage;
     @Inject
     private Serializer serializer;
     @Inject
@@ -34,11 +37,11 @@ public class DefaultUserService implements UserService {
     @Inject
     private Messenger messenger;
     @Inject @Named("config")
-    private Configuration config;
+    private YAMLFile config;
 
     @Override
     public void create(User user) {
-        mongoStorage.create(serializer.serialize(user));
+        mongoStorage.insert(user.getUuid().toString(), serializer.serialize(user));
     }
 
     @Override
@@ -46,7 +49,7 @@ public class DefaultUserService implements UserService {
         for (Destination destination : destinations) {
             switch (destination) {
                 case STORAGE -> {
-                    mongoStorage.update( "_id", user.getUuid().toString(), serializer.serialize(user));
+                    mongoStorage.update(user.getUuid().toString(), serializer.serialize(user));
                 }
 
                 case CACHE -> {
@@ -54,7 +57,7 @@ public class DefaultUserService implements UserService {
                 }
 
                 case CACHE_IF_PRESENT -> {
-                    if (redisStorage.contains(user.getUuid().toString())) {
+                    if (redisStorage.exists(user.getUuid().toString())) {
                         long ttl = redisStorage.getTTL(user.getUuid().toString());
                         redisStorage.update(user.getUuid().toString(), serializer.serialize(user));
                         redisStorage.setTTL(user.getUuid().toString(), (int) ttl);
@@ -62,8 +65,9 @@ public class DefaultUserService implements UserService {
                 }
 
                 case PLAYER_IF_ONLINE -> {
-                    UpdatedUserMessage message = new UpdatedUserMessage(user);
-                    messenger.send(serializer.serialize(message));
+                    ApplyUserDataMessage message = new ApplyUserDataMessage(user);
+                    Message messengerMessage = new Message(ApplyUserDataMessage.class, serializer.serialize(message));
+                    messenger.send(messengerMessage);
                 }
             }
         }
@@ -71,7 +75,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public boolean containsByUUID(UUID uuid) {
-        return redisStorage.contains(uuid.toString()) || mongoStorage.contains("_id", uuid.toString());
+        return redisStorage.exists(uuid.toString()) || mongoStorage.exists(uuid.toString());
     }
 
     @Override
@@ -87,7 +91,7 @@ public class DefaultUserService implements UserService {
         User user = serializer.deserialize(redisStorage.get(uuid.toString()), User.class);
         if (user != null) return Optional.of(user);
 
-        user = serializer.deserialize(mongoStorage.get("_id", uuid.toString()), User.class);
+        user = serializer.deserialize(mongoStorage.get(uuid.toString()), User.class);
 
         return Optional.ofNullable(user);
     }
@@ -104,7 +108,7 @@ public class DefaultUserService implements UserService {
     public Optional<User> requestUpdatedUserByUUID(UUID uuid) throws InterruptedException {
         if (!cacheContainsByUUID(uuid)) {
             // User is disconnected and it is not in cache
-            return Optional.ofNullable(serializer.deserialize(mongoStorage.get("_id", uuid.toString()), User.class));
+            return Optional.ofNullable(serializer.deserialize(mongoStorage.get(uuid.toString()), User.class));
         }
 
         if (redisStorage.hasTTL(uuid.toString())) {
@@ -114,24 +118,32 @@ public class DefaultUserService implements UserService {
 
         // User is online, so we try to get an updated version of it
         CompletableFuture<User> completableFuture = new CompletableFuture<>();
-        RequestUpdatedUserMessage requestUpdatedUserMessage = new RequestUpdatedUserMessage(uuid);
-        messenger.sendRequest(serializer.serialize(requestUpdatedUserMessage), new Response() {
+        UpdatedUserRequest request = new UpdatedUserRequest(uuid);
+        ConversationCallback callback = new ConversationCallback() {
             @Override
-            public void onSuccess(String channel, String JSON) {
-                SendRequestedUpdatedUserMessage updatedUserMessage = serializer.deserialize(JSON, SendRequestedUpdatedUserMessage.class);
-                completableFuture.complete(updatedUserMessage.getUser());
+            public void onSuccess(@NotNull Object object) {
+                UpdatedUserResponse response = (UpdatedUserResponse) object;
+                completableFuture.complete(response.getUser());
             }
 
             @Override
-            public void onFail(String s) {
+            public void onTimeout() {
                 completableFuture.complete(getUserByUUID(uuid).orElse(null));
             }
-        }, config.getInt("synchronization.timeouts.updated-user-request"));
+
+            @Override
+            public long getTimeout() {
+                return config.getLong("synchronization", "timeouts", "updated-user-request");
+            }
+        };
+
+        Conversation conversation = Conversation.ofRequest(UpdatedUserRequest.class, serializer.serialize(request), callback);
+        messenger.send(conversation);
 
         try {
             return Optional.ofNullable(completableFuture.get());
         } catch (Exception ignored) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -148,17 +160,11 @@ public class DefaultUserService implements UserService {
         for (Destination destination : destinations) {
             switch (destination) {
                 case STORAGE -> {
-                    mongoStorage.delete("_id", uuid.toString());
+                    mongoStorage.delete(uuid.toString());
                 }
 
-                case CACHE -> {
+                case CACHE, CACHE_IF_PRESENT -> {
                     redisStorage.delete(uuid.toString());
-                }
-
-                case CACHE_IF_PRESENT -> {
-                    if (redisStorage.contains(uuid.toString())) {
-                        redisStorage.delete(uuid.toString());
-                    }
                 }
             }
         }
@@ -174,7 +180,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public boolean cacheContainsByUUID(UUID uuid) {
-        return redisStorage.contains(uuid.toString());
+        return redisStorage.exists(uuid.toString());
     }
 
     @Override

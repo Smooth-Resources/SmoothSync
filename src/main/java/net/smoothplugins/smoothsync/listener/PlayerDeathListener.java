@@ -2,7 +2,7 @@ package net.smoothplugins.smoothsync.listener;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.smoothplugins.smoothbase.configuration.Configuration;
+import net.smoothplugins.smoothbase.common.file.YAMLFile;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.user.UserSaver;
 import net.smoothplugins.smoothsyncapi.event.AsyncDataUpdateEvent;
@@ -29,7 +29,7 @@ public class PlayerDeathListener implements Listener {
     @Inject
     private UserService userService;
     @Inject @Named("config")
-    private Configuration config;
+    private YAMLFile config;
     @Inject
     private UserSaver userSaver;
 
@@ -37,7 +37,7 @@ public class PlayerDeathListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (!userSaver.containsPlayer(player)) return;
-        if (!config.getBoolean("data-update.update-on-death")) return;
+        if (!config.getBoolean("data-update", "update-on-death")) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             User user = userService.getUserByUUID(player.getUniqueId()).orElse(null);
@@ -47,7 +47,7 @@ public class PlayerDeathListener implements Listener {
 
             Set<Destination> destinations = new HashSet<>();
             destinations.add(Destination.CACHE);
-            if (!config.getBoolean("data-update.performance-mode")) {
+            if (!config.getBoolean("data-update", "performance-mode")) {
                 destinations.add(Destination.STORAGE);
             }
 
@@ -56,7 +56,7 @@ public class PlayerDeathListener implements Listener {
 
             if (dataUpdateEvent.isCancelled()) return;
 
-            if (config.getBoolean("data-update.performance-mode")) {
+            if (config.getBoolean("data-update", "performance-mode")) {
                 userService.update(user, destinations.toArray(new Destination[0]));
             } else {
                 userService.update(user, destinations.toArray(new Destination[0]));

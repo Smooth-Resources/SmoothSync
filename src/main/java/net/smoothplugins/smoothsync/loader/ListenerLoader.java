@@ -1,7 +1,7 @@
 package net.smoothplugins.smoothsync.loader;
 
 import com.google.inject.Inject;
-import es.virtualhit.virtualmenu.VirtualMenu;
+import net.smoothplugins.smoothbase.paper.menu.manager.MenuManager;
 import net.smoothplugins.smoothsync.SmoothSync;
 import net.smoothplugins.smoothsync.listener.*;
 import org.bukkit.Bukkit;
@@ -27,6 +27,6 @@ public class ListenerLoader {
         Bukkit.getPluginManager().registerEvents(playerDeathListener, plugin);
         Bukkit.getPluginManager().registerEvents(entityDamageListener, plugin);
         Bukkit.getPluginManager().registerEvents(dataSyncListener, plugin);
-        VirtualMenu.registerListeners(plugin); // VirtualMenu
+        new MenuManager(plugin).registerListeners();
     }
 }

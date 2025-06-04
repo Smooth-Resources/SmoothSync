@@ -1,13 +1,12 @@
-package net.smoothplugins.smoothsync.messenger.message;
+package net.smoothplugins.smoothsync.message.user.quit;
 
 import java.util.UUID;
 
-public class QuitNotificationMessage extends DefaultMessage {
+public class QuitNotificationMessage {
 
     private final UUID userUUID;
 
     public QuitNotificationMessage(UUID userUUID) {
-        super(DefaultMessageType.QUIT_NOTIFICATION);
         this.userUUID = userUUID;
     }
 
@@ -15,3 +14,4 @@ public class QuitNotificationMessage extends DefaultMessage {
         return userUUID;
     }
 }
+
